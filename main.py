@@ -27,7 +27,7 @@ import grp
 import shutil
 #import urllib
 #import tarfile
-import gtk
+from gi.repository import Gtk
 
 from motor import MotorCairo
 
@@ -42,12 +42,12 @@ class VentanaGtk(MotorCairo):
 
     def __init__(self):
         """ Class initialiser """
-        self.window = gtk.Window()
-        self.area = gtk.DrawingArea()
+        self.window = Gtk.Window()
+        self.area = Gtk.DrawingArea()
         self.area.set_app_paintable(True)
         self.area.set_size_request(800, 600)
-        self.area.add_events(gtk.gdk.BUTTON_PRESS_MASK)
-        self.area.add_events(gtk.gdk.POINTER_MOTION_MASK)
+        self.area.add_events(Gdk.EventMask.BUTTON_PRESS_MASK)
+        self.area.add_events(Gdk.EventMask.POINTER_MOTION_MASK)
         self.area.connect("button-press-event", self.buttonpress_cb)
         self.area.connect("motion-notify-event", self.move_cb)
         self.area.connect("expose-event", self.expose)
@@ -58,26 +58,26 @@ class VentanaGtk(MotorCairo):
 
     def mensajes(self, num, mensa):
         tipo = (
-            gtk.MESSAGE_WARNING,
-            gtk.MESSAGE_QUESTION,
-            gtk.MESSAGE_ERROR,
-            gtk.MESSAGE_INFO
+            Gtk.MessageType.WARNING,
+            Gtk.MessageType.QUESTION,
+            Gtk.MessageType.ERROR,
+            Gtk.MessageType.INFO
         )
         botones = (
-            gtk.BUTTONS_OK,
-            gtk.BUTTONS_OK_CANCEL,
-            gtk.BUTTONS_OK,
-            gtk.BUTTONS_OK
+            Gtk.ButtonsType.OK,
+            Gtk.ButtonsType.OK_CANCEL,
+            Gtk.ButtonsType.OK,
+            Gtk.ButtonsType.OK
         )
-        md = gtk.MessageDialog(None,
-                               gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+        md = Gtk.MessageDialog(None,
+                               Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
                                tipo[num],
                                botones[num], mensa)
         resp = md.run()
         md.destroy()
-        if resp == gtk.RESPONSE_OK:
+        if resp == Gtk.ResponseType.OK:
             return True
-        elif resp == gtk.RESPONSE_CANCEL:
+        elif resp == Gtk.ResponseType.CANCEL:
             return False
 
     def move_cb(self, event, b):
@@ -114,7 +114,7 @@ class VentanaGtk(MotorCairo):
                 return
 
     def salir(self, b):
-        gtk.main_quit()
+        Gtk.main_quit()
 
     def fondo(self):
         self.ff = self.area.window.cairo_create()
@@ -274,7 +274,7 @@ def main():
     ventana.botones.append(BotonIcaro)
     ventana.botones.append(BotonPython)
     ventana.botones.append(BotonSalir)
-    gtk.main()
+    Gtk.main()
     return 0
 
 if __name__ == '__main__':

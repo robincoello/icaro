@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#import pygtk
+#import gi
 # Creamos una clase que almacena la información del programa (después se usara)
 
 

@@ -8,8 +8,8 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 
-import gst
-import gtk
+from gi.repository import Gst
+from gi.repository import Gtk
 from fcntl import ioctl
 import os
 from gettext import gettext as _

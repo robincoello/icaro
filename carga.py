@@ -10,28 +10,135 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-
+#import gi
+from gi.repository import Gtk
+import os
 import docker
+#import re
+#import shutil
+import sys
 import time
 import threading
-import gtk
-import util
+#from subprocess import Popen, PIPE, STDOUT
+processor = "18f4550"
+
+
+def compilar_pic(ruta, cfg):
+    #cfg= ConfigParser.ConfigParser()
+    # cfg.read("config.ini")
+    seccion = "compilador"
+    sec = cfg.options(seccion)
+    op = ""
+    for dat in sec:
+        if dat.find("op") >= 0:
+            op = op + "  " + cfg.get(seccion, dat)
+    val = os.system(cfg.get(seccion, "sdcc") + " -v")
+    if val <> 0:
+        return 1
+    chemin = sys.path[0]
+    dir_conf = os.path.expanduser('~') + "/.icaro/firmware"
+    if os.path.isdir(dir_conf + "/temporal/") == 0:
+        os.mkdir(dir_conf + "/temporal/")
+    try:
+        archivos_temp = os.listdir(dir_conf + "/temporal/")
+        for datos in archivos_temp:
+            os.remove(dir_conf + "/temporal/" + datos)
+    except:
+        print "no existen los archivos"
+    cad = str(cfg.get(seccion, "sdcc") +
+              " " + op + " " +
+              cfg.get(seccion, "temp") + ruta + ".o " +
+              cfg.get(seccion, "source") + ruta + ".c ")
+
+    # sortie = str(sdcc.strip("\n") +" "+
+                        #" -mpic16"+
+                        #" --denable-peeps"+
+                        #" --obanksel=9"+
+                        #" --opt-code-size "+
+                        #" --optimize-cmp"+
+                        #" --optimize-df"+
+                        #" -p" + processor +
+                        #" -I " +" ~/.icaro/firmware/source/" +
+                        #" -I " + " ~/.icaro/firmware/tmp/" +
+                        #" -I " + " ~/.icaro/firmware/non-free/include/pic16" +
+                        #" -I /usr/share/sdcc/include/pic16/ " +
+                        #" -c"+
+                        #" -c"+
+                        #" -o" +
+                        #" ~/.icaro/firmware/temporal/"+ruta+".o " +
+                        #" ~/.icaro/firmware/source/"+ruta+".c ")
+
+    log = cad + " 2> " + " ~/.icaro/firmware/temporal/" + "log.dat"
+    print log
+    i = os.system(cad)
+    print "este es el valor de i=", i
+    return i
+
+
+def upload_pic(ruta, cfg):
+    seccion = "upload"
+    sec = cfg.options(seccion)
+    op = ""
+    for dat in sec:
+        if dat.find("op") >= 0:
+            op = op + "  " + cfg.get(seccion, dat)
+    val = os.system(cfg.get(seccion, "sdcc") + " -v")
+    if val <> 0:
+        return 1
+    dir_conf = os.path.expanduser('~') + "/.icaro/firmware"
+    up = str(cfg.get(seccion, "sdcc") + " " +
+             cfg.get(seccion, "hex") + ruta + ".hex " +
+             " " + op + " " +
+             cfg.get(seccion, "obj") + ruta + ".o ")
+    print " upload------ ", up
+    # sortie2=str(        sdcc.strip("\n") +" "
+                        #" -o"+ " ~/.icaro/firmware/temporal/"+ruta+".hex "+
+                        #" --denable-peeps"+
+                        #" --obanksel=9"+
+                        #" --opt-code-size"+
+                        #" --optimize-cmp"+
+                        #" --optimize-df"+
+                        #" --no-crt"+
+                        #" -Wl-s/usr/share/icaro/pic16/lkr/18f2550.lkr,-m "+
+                        #" -mpic16"+
+                        #" -p"+processor+
+                        #" -l /usr/share/icaro/pic16/lib/libpuf.lib " +
+                        #" -l /usr/share/sdcc/lib/pic16/libc18f.lib "+
+                        #" --lib-path "+ dir_conf + "/non-free/lib/pic16/ " +
+                        #" -l /usr/share/sdcc/lib/pic16/libm18f.lib "+
+                        #"/usr/share/icaro/pic16/obj/usb_descriptors.o "+
+                        #"/usr/share/icaro/pic16/obj/crt0ipinguino.o "+
+                        #"/usr/share/icaro/pic16/obj/application_iface.o "+
+                        #" ~/.icaro/firmware/temporal/"+ruta+".o ")
+
+    #"/usr/share/sdcc/non-free/lib/pic16/ "
+    # print "--------------------------------------------------------------------------------------------------------"
+    # print sortie2
+    # print "--------------------------------------------------------------------------------------------------------"
+    #~ " -l " +sys.path[0].replace(" ","\\ ")+"/sdcc/lib/libio"+processor+".lib"+
+
+    i = os.system(up)
+    # cargador=Cargador(ruta)
+    # cargador.start()
+
+    return i
+
 
 class Cargador(threading.Thread):
 
         def __init__(self, ruta):
             threading.Thread.__init__(self)
-            self.win = gtk.Window()
+            self.win = Gtk.Window()
             self.win.set_resizable(False)
             self.win.set_default_size(600, 600)
-            box1 = gtk.VBox(False, 3)
-            pixbufanim = gtk.gdk.PixbufAnimation("imagenes/gif/icr.gif")
-            image = gtk.Image()
+            box1 = Gtk.VBox(False, 3)
+            pixbufanim = GdkPixbuf.PixbufAnimation("imagenes/gif/icr.gif")
+            image = Gtk.Image()
             image.set_from_animation(pixbufanim)
             image.show()
-            self.text = gtk.Label(
+            self.text = Gtk.Label(label=
                 "conecta la placa al puerto USB y enciendela")
-            button = gtk.Button("cancelar")
+            button = Gtk.Button("cancelar")
             button.connect("clicked", self.cancelar)
             box1.pack_start(image, False, True, 1)
 
@@ -52,7 +159,7 @@ class Cargador(threading.Thread):
 
         def run(self):
             a = 1
-            dir_conf = util.obtener_path_usuario() + "/.icaro/firmware"
+            dir_conf = os.path.expanduser('~') + "/.icaro/firmware"
             while self.vivo:
                 i = docker.docker(dir_conf + "/temporal/" + self.ruta + ".hex")
                 time.sleep(1)

@@ -13,9 +13,9 @@
 
 #import sys
 #import re
-import gtk
-#import gobject
-import webkit
+from gi.repository import Gtk
+#from gi.repository import GObject
+from gi.repository import WebKit
 DEFAULT_URL = "http://roboticaro.org/documentacion/index.html"
 # sys.path[0]+'/documentos/publican/manual_np05/tmp/es-ES/html/index.html'
 
@@ -24,66 +24,66 @@ class SimpleBrowser:  # needs GTK, Python, Webkit-GTK
     tam = 1
 
     def __init__(self):
-        self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
-        self.window.set_position(gtk.WIN_POS_CENTER_ALWAYS)
+        self.window = Gtk.Window(Gtk.WindowType.TOPLEVEL)
+        self.window.set_position(Gtk.WindowPosition.CENTER_ALWAYS)
         self.window.connect('delete_event', self.close_application)
         self.window.set_default_size(750, 500)
-        vbox = gtk.VBox(spacing=5)
+        vbox = Gtk.VBox(spacing=5)
         vbox.set_border_width(5)
-        self.txt_url = gtk.Entry()
+        self.txt_url = Gtk.Entry()
         self.txt_url.connect('activate', self._txt_url_activate)
 #~
         # Genero una barra de herramientas
-        toolbar = gtk.HBox(spacing=5)
+        toolbar = Gtk.HBox(spacing=5)
         vbox.pack_start(toolbar, False, False)
 #~
         # Agrego el boton "Atras"
-        self.btnback = gtk.Button()
-        self.btnback.add(gtk.Arrow(gtk.ARROW_LEFT, gtk.SHADOW_OUT))
+        self.btnback = Gtk.Button()
+        self.btnback.add(Gtk.Arrow(Gtk.ArrowType.LEFT, Gtk.ShadowType.OUT))
         self.btnback.connect('clicked', self._go_back)
         toolbar.pack_start(self.btnback, False, False)
         # Agrego el boton de "Ir"
-        button = gtk.Button(_('Home'))
+        button = Gtk.Button(_('Home'))
         button.connect('clicked', self._open_bar_url)
         toolbar.pack_start(button, False, False)
         # Agrego el boton "Adelante"
-        self.btnforward = gtk.Button()
-        self.btnforward.add(gtk.Arrow(gtk.ARROW_RIGHT, gtk.SHADOW_OUT))
+        self.btnforward = Gtk.Button()
+        self.btnforward.add(Gtk.Arrow(Gtk.ArrowType.RIGHT, Gtk.ShadowType.OUT))
         self.btnforward.connect('clicked', self._go_forward)
         toolbar.pack_start(self.btnforward, False, False)
         # Agrego el boton de "close"
-        button = gtk.Button(_('Exit'))
+        button = Gtk.Button(_('Exit'))
         button.connect('clicked', self.close)
         toolbar.pack_start(button, False, False)
         # Agrego el boton de "zoom"
-        button = gtk.Button(_('increase'))
+        button = Gtk.Button(_('increase'))
         button.connect('clicked', self.zoom, 1)
         toolbar.pack_start(button, False, False)
-        button = gtk.Button(_('Decrease'))
+        button = Gtk.Button(_('Decrease'))
         button.connect('clicked', self.zoom, -1)
         toolbar.pack_start(button, False, False)
         # ~ # Agrego el boton "Actualizar"
-        #~ btnrefresh = gtk.Button('Actualizar')
+        #~ btnrefresh = Gtk.Button('Actualizar')
         #~ btnrefresh.connect('clicked',self._refresh)
         #~ toolbar.pack_start(btnrefresh,False,False)
 #~
         # ~ # Agrego la barra de direcciones
-        #~ self.text = gtk.Entry()
+        #~ self.text = Gtk.Entry()
         #~ self.text.connect('activate',self._open_bar_url)
         #~ toolbar.pack_start(self.text,True,True)
 #~
 
         # Agrego el renderer del motor
-        self.scrolled_window = gtk.ScrolledWindow()
+        self.scrolled_window = Gtk.ScrolledWindow()
         self.webview = webkit.WebView()
         self.scrolled_window.add(self.webview)
         vbox.pack_start(self.scrolled_window, fill=True, expand=True)
         self.window.add(vbox)
 
         # Agrego un alinea de estado, con una etiqueta y una barra de progreso
-        self.pbar = gtk.ProgressBar()
-        self.status = gtk.Label()
-        hbox2 = gtk.HBox(False, 0)
+        self.pbar = Gtk.ProgressBar()
+        self.status = Gtk.Label()
+        hbox2 = Gtk.HBox(False, 0)
         hbox2.pack_start(self.status, False, False)
         hbox2.pack_end(self.pbar, False, False)
         vbox.pack_start(hbox2, False, True)
@@ -122,11 +122,11 @@ class SimpleBrowser:  # needs GTK, Python, Webkit-GTK
             self.tam == 0
 
     def close(self, arg):
-        #~ gtk.main_quit()
+        #~ Gtk.main_quit()
         self.window.hide()
 
     def close_application(self, widget, event, data=None):
-        #~ gtk.main_quit()
+        #~ Gtk.main_quit()
         self.window.hide()
 
     def _load_start(self, view, nadas):

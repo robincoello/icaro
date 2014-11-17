@@ -10,48 +10,46 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
+
+#######################################################
+#This file contains the code for the source code viewer
+#######################################################
+
 import os
 import os.path
 #import sys
-import pygtk
+import gi
 import carga
-pygtk.require('2.0')
-import util
-import gtk
-if gtk.pygtk_version < (2, 10, 0):
-    print "PyGtk 2.10 or later required for this example"
-    raise SystemExit
-
-import gtksourceview2
-import pango
+from gi.repository import Gtk
+from gi.repository import GtkSource
+from gi.repository import Pango
 
 
 class visor_codigo():
 
     def __init__(self, ventana, notebook):
         # create buffer
-        lm = gtksourceview2.LanguageManager()
-        self.buffer = gtksourceview2.Buffer()
-        self.buffer.set_data('languages-manager', lm)
-        
-        view = gtksourceview2.View(self.buffer)
-        view.set_show_line_numbers(True)
+        lm = GtkSource.LanguageManager()
+        lang = lm.get_language('c')
+        self.buffer = GtkSource.Buffer()
+        self.buffer.set_language(lang)
+        view = GtkSource.View.new_with_buffer(self.buffer)
         self.ventana = ventana
- #       self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
- #       self.window.set_border_width(0)
- #       self.window.set_title('codigo fuente generado por el sistema')
-        # windows.append(window) # this list contains all view windows
-#        self.window.set_default_size(500, 500)
-#        self.window.show()
+        #self.window = Gtk.Window(Gtk.WindowType.TOPLEVEL)
+        #self.window.set_border_width(0)
+        #self.window.set_title('codigo fuente generado por el sistema')
+        #windows.append(window) # this list contains all view windows
+        #self.window.set_default_size(500, 500)
+        #self.window.show()
 
-        vbox = gtk.VBox(0, True)
- #       self.window.add(vbox)
-        notebook.append_page(vbox, gtk.Label("codigo fuente"))
-        tool1 = gtk.Toolbar()
+        vbox = Gtk.VBox(0, True)
+        #self.window.add(vbox)
+        notebook.append_page(vbox, Gtk.Label(label="codigo fuente"))
+        tool1 = Gtk.Toolbar()
         tool1.show()
 
-        iconw = gtk.Image()
-        iconw.set_from_stock(gtk.STOCK_EXECUTE, 15)
+        iconw = Gtk.Image()
+        iconw.set_from_stock(Gtk.STOCK_EXECUTE, 15)
         # tool_button = tool1.append_item(
         #                _("Compile"),
         #                "compila la version modificada en el editor.",
@@ -59,15 +57,15 @@ class visor_codigo():
         #                iconw,
         #                self.compilar)
 
-        vbox.pack_start(tool1, fill=False, expand=False)
-        sw = gtk.ScrolledWindow()
-        sw.set_shadow_type(gtk.SHADOW_IN)
+        vbox.pack_start(tool1, False, False, False)
+        sw = Gtk.ScrolledWindow()
+        sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.add(view)
-        vbox.pack_start(sw, fill=True, expand=True)
-#~
-        #~ toolbar = gtk.HBox(spacing=0)
+        vbox.pack_start(sw, True, True, False)
+
+        #~ toolbar = Gtk.HBox(spacing=0)
         #~ vbox.pack_start(toolbar,False,False)
-        #~ button = gtk.Button('salir')
+        #~ button = Gtk.Button('salir')
         #~ button.connect('clicked',self.close)
         #~ toolbar.pack_start(button,False,False,0)
 
@@ -75,19 +73,22 @@ class visor_codigo():
         # main loop
         dir_conf = os.path.expanduser('~') + "/.icaro/firmware/"
         self.cadena_user_c = dir_conf + "source/user.c"
-        self.buf = self.open_file(self.buffer, self.cadena_user_c)
-        iconw = gtk.Image()
-        iconw.set_from_stock(gtk.STOCK_NEW, 15)
-        tool_button = tool1.append_item(
-            "recargar",
-            "",
-            "Private",
-            iconw,
-            self.recargar)
+        #COMENTADO POR MIGRACION
+        #self.buf = self.open_file(self.buffer, self.cadena_user_c)
+        iconw = Gtk.Image()
+        iconw.set_from_stock(Gtk.STOCK_NEW, 15)
+        #COMENTADO EN MIGRACION
+        #tool_button = tool1.append_item(
+        #    "recargar",
+        #    "",
+        #    "Private",
+        #    iconw,
+        #    self.recargar)
 
     def open_file(self, buffer, filename):
         # get the new language for the file mimetype
-        manager = buffer.get_data('languages-manager')
+        #COMENTADO POR MIGRACION
+        #manager = buffer.get_data('languages-manager')
 
         if os.path.isabs(filename):
             path = filename
@@ -130,15 +131,18 @@ class visor_codigo():
             file.close()
 
     def recargar(self, b):
-        self.buf = self.open_file(self.buffer, self.cadena_user_c)
+        pass
+        #MIGRACION
+        #self.buf = self.open_file(self.buffer, self.cadena_user_c)
 
         # self.buf=self.open_file(arg[0],arg[1])
-        #~ gtk.main_quit()
-#        self.window.hide()
+        #~ Gtk.main_quit()
+        # self.window.hide()
 
     def compilar(self, arg):
         dir_conf = os.path.expanduser('~') + "/.icaro/firmware/"
         cadena = dir_conf + "source/user.c"
+        #MIGRACION
         cadena2 = self.buf.props.text
         a = self.ventana.mensajes(
             1, "Las modificaciones echas en el editor no se mantendran, y seran eliminadas cuando se compile de vuelta desde icaro-bloques. ¿Desea continuar?")
@@ -146,9 +150,7 @@ class visor_codigo():
             file = open(cadena, "w")
             file.writelines(cadena2)
             file.close()
-            i= util.compilar("main",self.ventana.cfg,dir_conf)
-
-            #i = carga.compilar_pic("main", self.ventana.cfg)
+            i = carga.compilar_pic("main", self.ventana.cfg)
             if i == 0:
                 self.ventana.mensajes(3, "la compilacion fue exitosa")
             else:

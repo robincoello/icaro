@@ -12,7 +12,7 @@
 # GNU General Public License for more details.
 
 import sys
-import gtk
+from gi.repository import Gtk
 #from os import system
 
 #import time
@@ -206,7 +206,7 @@ class comp_dat_arg():
             self.posic_rel_x = abs(self.posicion[0] - posic_mouse[0])
             self.posic_rel_y = abs(self.posicion[1] - posic_mouse[1])
             self.pulsado = 1
-            #print self.rectan
+            print self.rectan
         if self.ventana.seleccionado_datos == self.ide:
             self.posicion = (
                 posic_mouse[0] - self.posic_rel_x,
@@ -231,8 +231,8 @@ class comp_dat_arg():
                 self.fondo.objetos_datos[i].pegado_a2 = 0
             a = self.fondo.objetos_datos.index(self)
             ident = self.fondo.objetos_datos[a].ide
-            #print a
-            #print len(self.fondo.objetos_datos)
+            print a
+            print len(self.fondo.objetos_datos)
             #del self.fondo.tipo_obj_datos[a]
             # self.kill()
             self.fondo.objetos_datos.remove(self)
@@ -243,22 +243,22 @@ class comp_dat_arg():
         self.cadena_intermedia = ""
 
     def cuadro_texto(self, x, y):
-        window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+        window = Gtk.Window(Gtk.WindowType.TOPLEVEL)
         window.set_resizable(False)
         window.set_modal(True)
         window.set_border_width(0)
         window.move(x, y)
         window.set_title('ingrese un valor')
         window.set_default_size(100, 200)
-        entry = gtk.Entry()
-        label = gtk.Label("valor")
-        BotonAceptar = gtk.Button("aceptar")
+        entry = Gtk.Entry()
+        label = Gtk.Label(label="valor")
+        BotonAceptar = Gtk.Button("aceptar")
         BotonAceptar.connect("clicked", self.boton, window, entry)
-        window.add_events(gtk.gdk.KEY_PRESS_MASK)
+        window.add_events(Gdk.EventMask.KEY_PRESS_MASK)
         window.connect("key_press_event", self.keypress_cb, window, entry)
-        boxv = gtk.VBox(False, 2)
-        boxh = gtk.HBox(False, 2)
-        boxh2 = gtk.HBox(False, 2)
+        boxv = Gtk.VBox(False, 2)
+        boxh = Gtk.HBox(False, 2)
+        boxh2 = Gtk.HBox(False, 2)
 
         boxh.pack_start(label, True, True, 1)
         boxh.pack_start(entry, True, True, 1)
@@ -285,20 +285,20 @@ class comp_dat_arg():
         self.ventana.boton_mouse = [0, 0, 0, 0]
 
         window.hide()
-#        d = gtk.MessageDialog(None,
-#                              gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-#                              gtk.MESSAGE_QUESTION,
-#                              gtk.BUTTONS_OK_CANCEL,
+#        d = Gtk.MessageDialog(None,
+#                              Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
+#                              Gtk.MessageType.QUESTION,
+#                              Gtk.ButtonsType.OK_CANCEL,
 #                              "ingrese un valor")
-#        entry = gtk.Entry()
+#        entry = Gtk.Entry()
 #        entry.show()
-#        d.vbox.pack_end(entry)
-#        entry.connect('activate', lambda _: d.response(gtk.RESPONSE_OK))
-#        d.set_default_response(gtk.RESPONSE_OK)
+#        d.vbox.pack_end(entry, True, True, 0)
+#        entry.connect('activate', lambda _: d.response(Gtk.ResponseType.OK))
+#        d.set_default_response(Gtk.ResponseType.OK)
 #        r = d.run()
 #        text = entry.get_text().decode('utf8')
 #        d.destroy()
-#        if r == gtk.RESPONSE_OK:
+#        if r == Gtk.ResponseType.OK:
 #            return text
 #        else:
 #            return None

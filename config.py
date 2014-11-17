@@ -25,8 +25,8 @@
 
 import sys
 #import re
-import gtk
-#import gobject
+from gi.repository import Gtk
+#from gi.repository import GObject
 
 
 class CONFIG:
@@ -35,8 +35,8 @@ class CONFIG:
 
     def __init__(self):
         """ Class initialiser """
-        self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
-        self.window.set_position(gtk.WIN_POS_CENTER_ALWAYS)
+        self.window = Gtk.Window(Gtk.WindowType.TOPLEVEL)
+        self.window.set_position(Gtk.WindowPosition.CENTER_ALWAYS)
         self.window.connect('delete_event', self.close_application)
         #~ self.window.set_default_size(750, 500)
         conf = open(sys.path[0] + "/config.dat", "r")
@@ -46,17 +46,17 @@ class CONFIG:
             val = val.strip("\n")
             tupla.append(val)
         conf.close()
-        vbox = gtk.VBox(False, spacing=5)
+        vbox = Gtk.VBox(False, spacing=5)
         vbox.set_border_width(5)
 
         # boton examinar
-        hboxsdcc = gtk.HBox(True, 0)
-        self.SdccBoton = gtk.Button()
+        hboxsdcc = Gtk.HBox(True, 0)
+        self.SdccBoton = Gtk.Button()
         self.SdccBoton.set_label("examinar")
         self.SdccBoton.connect('clicked', self.exam, "sdcc")
         # texto de configuracion para sdcc
-        self.SdccText = gtk.Entry()
-        self.SdccLabel = gtk.Label()
+        self.SdccText = Gtk.Entry()
+        self.SdccLabel = Gtk.Label()
         self.SdccLabel.set_text("Binario sdcc")
         try:
             self.SdccText.set_text(tupla[0])
@@ -71,14 +71,14 @@ class CONFIG:
 
         # tortucaro
         # boton examinar
-        hboxTurtle = gtk.HBox(True, 0)
+        hboxTurtle = Gtk.HBox(True, 0)
 
-        self.TurtleBoton = gtk.Button()
+        self.TurtleBoton = Gtk.Button()
         self.TurtleBoton.set_label("examinar")
         self.TurtleBoton.connect('clicked', self.exam, "turtle")
         # texto de configuracion para sdcc
-        self.TurtleText = gtk.Entry()
-        self.TurtleLabel = gtk.Label()
+        self.TurtleText = Gtk.Entry()
+        self.TurtleLabel = Gtk.Label()
         self.TurtleLabel.set_text("Ruta TurtleArt")
         try:
             self.TurtleText.set_text(tupla[1])
@@ -92,13 +92,13 @@ class CONFIG:
 
         # boton aplicar y salir
         # Aplicar
-        hboxbotones = gtk.HBox(False, 0)
-        self.AplicarBoton = gtk.Button()
+        hboxbotones = Gtk.HBox(False, 0)
+        self.AplicarBoton = Gtk.Button()
         self.AplicarBoton.set_label("Aplicar")
         self.AplicarBoton.connect('clicked', self.aplicar)
 
         # Salir
-        self.SalirBoton = gtk.Button()
+        self.SalirBoton = Gtk.Button()
         self.SalirBoton.set_label("Salir")
         self.SalirBoton.connect('clicked', self.close)
 
@@ -109,43 +109,43 @@ class CONFIG:
         self.window.add(vbox)
 
     def aplicar(self, arg):
-        #~ gtk.main_quit()
+        #~ Gtk.main_quit()
         conf = open(sys.path[0] + "/config.dat", "w")
         conf.write(self.SdccText.get_text() + "\n")
         conf.write(self.TurtleText.get_text() + "\n")
         conf.close()
 
     def close(self, arg):
-        #~ gtk.main_quit()
+        #~ Gtk.main_quit()
         self.window.hide()
 
     def close_application(self, widget, event, data=None):
-        #~ gtk.main_quit()
+        #~ Gtk.main_quit()
         self.window.hide()
 
     def show(self):
         self.window.show_all()
 
     def exam(self, arg, valor):
-        dialog = gtk.FileChooserDialog(
+        dialog = Gtk.FileChooserDialog(
             "Open..",
             None,
-            gtk.FILE_CHOOSER_ACTION_OPEN,
+            Gtk.FileChooserAction.OPEN,
             (
-                gtk.STOCK_CANCEL,
-                gtk.RESPONSE_CANCEL,
-                gtk.STOCK_OPEN,
-                gtk.RESPONSE_OK
+                Gtk.STOCK_CANCEL,
+                Gtk.ResponseType.CANCEL,
+                Gtk.STOCK_OPEN,
+                Gtk.ResponseType.OK
             )
         )
-        dialog.set_default_response(gtk.RESPONSE_OK)
+        dialog.set_default_response(Gtk.ResponseType.OK)
         response = dialog.run()
-        if response == gtk.RESPONSE_OK:
+        if response == Gtk.ResponseType.OK:
             cadena = dialog.get_filename()
             if valor == "sdcc":
                 self.SdccText.set_text(cadena)
             if valor == "turtle":
                 self.TurtleText.set_text(cadena)
             dialog.destroy()
-        elif response == gtk.RESPONSE_CANCEL:
+        elif response == Gtk.ResponseType.CANCEL:
             dialog.destroy()
