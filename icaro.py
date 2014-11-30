@@ -455,8 +455,7 @@ class Ventana:
             tool_button = toolbar.insert(tool_icon, -1)
 
     def definir_cursor(self, b):
-        pass
-        #self.area.window.set_cursor(self.cursores[b])
+        self.area.get_window().set_cursor(self.cursores[b])
 
 # ========================================================================
 # ABRIR LA VENTANA DE VISOR DE CODIGO
