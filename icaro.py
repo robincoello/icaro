@@ -26,6 +26,7 @@ import config
 import graficador
 #Gtk3
 from gi.repository import Gtk
+from gi.repository import Gdk
 from gi.repository import GObject
 from gi.repository import cairo
 
@@ -406,11 +407,11 @@ class Ventana:
 
         # capturo los eventos del drawing area
         # menos el teclado que lo capturo desde la ventana principal
-        #self.area.add_events(Gdk.EventMask.BUTTON_PRESS_MASK)
-        #self.area.add_events(Gdk.EventMask.BUTTON_RELEASE_MASK)
-        #self.area.add_events(Gdk.EventMask.POINTER_MOTION_MASK)
-        #self.window1.add_events(Gdk.EventMask.KEY_PRESS_MASK)
-        #self.window1.add_events(Gdk.EventMask.KEY_RELEASE_MASK)
+        self.area.add_events(Gdk.EventMask.BUTTON_PRESS_MASK)
+        self.area.add_events(Gdk.EventMask.BUTTON_RELEASE_MASK)
+        self.area.add_events(Gdk.EventMask.POINTER_MOTION_MASK)
+        self.window1.add_events(Gdk.EventMask.KEY_PRESS_MASK)
+        self.window1.add_events(Gdk.EventMask.KEY_RELEASE_MASK)
         self.area.connect("button-press-event", self.buttonpress_cb)
         self.area.connect("button-release-event", self.buttonrelease_cb)
         #self.area.connect("motion-notify-event", self.move_cb)
@@ -828,10 +829,13 @@ class Ventana:
         return True
 
     def update(self, ff):
+        '''
+        ff es un Cairo Context
+        '''
         rgb = fon.color(fon.FONDO)
         ff.set_source_rgb(rgb[0], rgb[1], rgb[2])
         ff.paint()
-        self.cr = self.area.get_window().cairo_create()
+        self.cr = ff
         self.fondo.zoom(self.z, self.cr)
         self.fondo.update()
         if fon.objetos_datos > 0:
@@ -839,21 +843,6 @@ class Ventana:
                 dat.update()
         for obj in fon.objetos:
             obj.update()
-        '''
-        COMENTADO POR MIGRACION
-        self.ff = self.area.get_window().cairo_create()
-        rgb = fon.color(fon.FONDO)
-        self.ff.set_source_rgb(rgb[0], rgb[1], rgb[2])
-        self.ff.paint()
-        self.cr = self.area.get_window().cairo_create()
-        self.fondo.zoom(self.z, self.cr)
-        self.fondo.update()
-        if fon.objetos_datos > 0:
-            for dat in fon.objetos_datos:
-                dat.update()
-        for obj in fon.objetos:
-            obj.update()
-        '''
         return True
 
     def expose(self, event, b):
@@ -868,7 +857,8 @@ class Ventana:
         self.boton_mouse[event.button] = 1
         # aca llamo a update porque si no, me tira un error en tiempo
         # de ejecucion
-        self.update()
+        cairo_context = win.get_window().cairo_create()
+        self.update(cairo_context)
         self.boton_mouse[event.button] = 1
         if event.button == 3:
             self.boton_mouse[event.button] = 0
