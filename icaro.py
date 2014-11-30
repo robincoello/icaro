@@ -831,6 +831,14 @@ class Ventana:
         rgb = fon.color(fon.FONDO)
         ff.set_source_rgb(rgb[0], rgb[1], rgb[2])
         ff.paint()
+        self.cr = self.area.get_window().cairo_create()
+        self.fondo.zoom(self.z, self.cr)
+        self.fondo.update()
+        if fon.objetos_datos > 0:
+            for dat in fon.objetos_datos:
+                dat.update()
+        for obj in fon.objetos:
+            obj.update()
         '''
         COMENTADO POR MIGRACION
         self.ff = self.area.get_window().cairo_create()
