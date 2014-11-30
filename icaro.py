@@ -24,11 +24,11 @@ import visor
 import tooltips
 import config
 import graficador
+import cairo
 #Gtk3
 from gi.repository import Gtk
 from gi.repository import Gdk
 from gi.repository import GObject
-from gi.repository import cairo
 
 #from subprocess import Popen, PIPE, STDOUT
 from motor import MotorCairo
@@ -414,29 +414,28 @@ class Ventana:
         self.window1.add_events(Gdk.EventMask.KEY_RELEASE_MASK)
         self.area.connect("button-press-event", self.buttonpress_cb)
         self.area.connect("button-release-event", self.buttonrelease_cb)
-        #self.area.connect("motion-notify-event", self.move_cb)
-        #self.area.connect("expose-event", self.expose)
+        self.area.connect("motion-notify-event", self.move_cb)
         self.area.connect("draw", self.expose)
         self.window1.connect("key_press_event", self.keypress_cb)
         self.window1.connect("key_release_event", self.keyrelease_cb)
         self.area.realize()
-        #display = self.area.window.get_display()
-        #pixbuf = cairo.ImageSurface.create_from_png(
-        #    os.path.abspath(os.path.dirname(__file__)) + "/imagenes/mouse/lapiz.png")
-        #lapiz = Gdk.Cursor.new(display, pixbuf, 6, 18)
-        #self.cursores.append(lapiz)
-        #pixbuf = cairo.ImageSurface.create_from_png(
-        #    os.path.abspath(os.path.dirname(__file__)) + "/imagenes/mouse/puntero.png")
-        #puntero = Gdk.Cursor.new(display, pixbuf, 6, 18)
-        #self.cursores.append(puntero)
-        #pixbuf = cairo.ImageSurface.create_from_png(
-        #    os.path.abspath(os.path.dirname(__file__)) + "/imagenes/mouse/borrar.png")
-        #borrar = Gdk.Cursor.new(display, pixbuf, 6, 18)
-        #self.cursores.append(borrar)
-        #pixbuf = cairo.ImageSurface.create_from_png(
-        #    os.path.abspath(os.path.dirname(__file__)) + "/imagenes/mouse/edicion.png")
-        #edicion = Gdk.Cursor.new(display, pixbuf, 6, 18)
-        #self.cursores.append(edicion)
+        display = self.area.get_window().get_display()
+        pixbuf = cairo.ImageSurface.create_from_png(
+            os.path.abspath(os.path.dirname(__file__)) + "/imagenes/mouse/lapiz.png")
+        lapiz = Gdk.Cursor.new_from_surface(display, pixbuf, 6, 18)
+        self.cursores.append(lapiz)
+        pixbuf = cairo.ImageSurface.create_from_png(
+            os.path.abspath(os.path.dirname(__file__)) + "/imagenes/mouse/puntero.png")
+        puntero = Gdk.Cursor.new_from_surface(display, pixbuf, 6, 18)
+        self.cursores.append(puntero)
+        pixbuf = cairo.ImageSurface.create_from_png(
+            os.path.abspath(os.path.dirname(__file__)) + "/imagenes/mouse/borrar.png")
+        borrar = Gdk.Cursor.new_from_surface(display, pixbuf, 6, 18)
+        self.cursores.append(borrar)
+        pixbuf = cairo.ImageSurface.create_from_png(
+            os.path.abspath(os.path.dirname(__file__)) + "/imagenes/mouse/edicion.png")
+        edicion = Gdk.Cursor.new_from_surface(display, pixbuf, 6, 18)
+        self.cursores.append(edicion)
         self.definir_cursor(1)
 
     def crear_toolbuttons(self, tipo, toolbar, img, nombre, tooltip, func, metodos):
