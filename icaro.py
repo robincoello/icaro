@@ -321,7 +321,7 @@ class Ventana:
              "Load", self.tooltip["cargar"], self.upload, None],
             [2, toolbar, sys.path[0] + "/imagenes/tortucaro.png",
              "Tortucaro", self.tooltip["tortucaro"], self.comp_esp, "tortucaro"],
-            
+
             [2, toolbar, sys.path[0] + "/imagenes/pilas.png",
              "pilas", self.tooltip["tortucaro"], self.comp_esp, "pilas-engine"],
 
@@ -443,16 +443,17 @@ class Ventana:
         if tipo == 1:
             iconw = Gtk.Image()
             iconw.set_from_stock(img, 30)
-            tool_icon = Gtk.ToolButton.new(iconw, _(nombre))
-            tool_icon.connect('clicked', func)
-            tool_button = toolbar.insert(tool_icon, -1)
 
         if tipo == 2:
             iconw = Gtk.Image()
             iconw.set_from_file(img)
-            tool_icon = Gtk.ToolButton.new(iconw, _(nombre))
+
+        tool_icon = Gtk.ToolButton.new(iconw, _(nombre))
+        if metodos is not None:
+            tool_icon.connect('clicked', func, metodos)
+        else:
             tool_icon.connect('clicked', func)
-            tool_button = toolbar.insert(tool_icon, -1)
+        tool_button = toolbar.insert(tool_icon, -1)
 
     def definir_cursor(self, b):
         self.area.get_window().set_cursor(self.cursores[b])
