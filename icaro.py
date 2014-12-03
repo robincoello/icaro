@@ -260,7 +260,7 @@ class Ventana:
         scrolled_window.add_with_viewport(self.area)
         scrolled_window3.add_with_viewport(toolbar)
         scrolled_window2.add_with_viewport(notebook)
-        
+
         self.notebook2.append_page(scrolled_window, Gtk.Label(label="bloques"))
         box2.pack_start(scrolled_window3, False, False, 1)
         box2.pack_start(hp, True, True, 1)
@@ -439,7 +439,9 @@ class Ventana:
         self.definir_cursor(1)
 
     def crear_toolbuttons(self, tipo, toolbar, img, nombre, tooltip, func, metodos):
-        # creo los botones de la toolbar
+        '''
+        Crear los botones de la toolbar
+        '''
         if tipo == 1:
             iconw = Gtk.Image()
             iconw.set_from_stock(img, 30)
@@ -522,21 +524,25 @@ class Ventana:
         elif resp == Gtk.ResponseType.CANCEL:
             return False
 
-    # esta funcion captura el evento de presionar un boton de la toolbar
-    # table y lo manda tipo_componentes
     def botones(self, event, b):
+        '''
+        Esta funcion captura el evento de presionar un boton de la toolbar
+        table y lo manda tipo_componentes
+        '''
         self.tipo_componente = b
         self.seleccion_menu = 1
         self.definir_cursor(1)
 
-        return
+        return True
 
 # ========================================================================
 # FUNCIONES PARA COMPILAR Y CARGAR EL FIRMWARE
 # ========================================================================
-    # cargo template.pde para tener la planilla estandar dentro de
-    # cadena_pinguino
     def carga(self):
+        '''
+        Cargar template.pde para tener la planilla estandar dentro de
+        cadena_pinguino
+        '''
         self.cadena_pinguino[:] = []
         dir_conf = os.path.expanduser('~') + "/.icaro/firmware/"
         archivo = open(dir_conf + "/source/template.pde", "r")
@@ -845,7 +851,6 @@ class Ventana:
         return True
 
     def expose(self, event, b):
-        # print event,"---",b
         self.update(b)
 
     def move_cb(self, win, event):
@@ -853,6 +858,9 @@ class Ventana:
         self.mousexy = (mouse[0] / self.z, mouse[1] / self.z)
 
     def buttonpress_cb(self, win, event):
+        '''
+        Cada vez que el cursor hace click sobre el Drawarea
+        '''
         self.boton_mouse[event.button] = 1
         # aca llamo a update porque si no, me tira un error en tiempo
         # de ejecucion
