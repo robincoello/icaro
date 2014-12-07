@@ -35,33 +35,33 @@ class SimpleBrowser:  # needs GTK, Python, Webkit-GTK
 #~
         # Genero una barra de herramientas
         toolbar = Gtk.HBox(spacing=5)
-        vbox.pack_start(toolbar, False, False)
+        vbox.pack_start(toolbar, False, False, 1)
 #~
         # Agrego el boton "Atras"
         self.btnback = Gtk.Button()
         self.btnback.add(Gtk.Arrow(Gtk.ArrowType.LEFT, Gtk.ShadowType.OUT))
         self.btnback.connect('clicked', self._go_back)
-        toolbar.pack_start(self.btnback, False, False)
+        toolbar.pack_start(self.btnback, False, False, 0)
         # Agrego el boton de "Ir"
         button = Gtk.Button(_('Home'))
         button.connect('clicked', self._open_bar_url)
-        toolbar.pack_start(button, False, False)
+        toolbar.pack_start(button, False, False, 0)
         # Agrego el boton "Adelante"
         self.btnforward = Gtk.Button()
         self.btnforward.add(Gtk.Arrow(Gtk.ArrowType.RIGHT, Gtk.ShadowType.OUT))
         self.btnforward.connect('clicked', self._go_forward)
-        toolbar.pack_start(self.btnforward, False, False)
+        toolbar.pack_start(self.btnforward, False, False, 0)
         # Agrego el boton de "close"
         button = Gtk.Button(_('Exit'))
         button.connect('clicked', self.close)
-        toolbar.pack_start(button, False, False)
+        toolbar.pack_start(button, False, False, 0)
         # Agrego el boton de "zoom"
         button = Gtk.Button(_('increase'))
-        button.connect('clicked', self.zoom, 1)
-        toolbar.pack_start(button, False, False)
+        button.connect('clicked', self.zoom, 0)
+        toolbar.pack_start(button, False, False, 0)
         button = Gtk.Button(_('Decrease'))
         button.connect('clicked', self.zoom, -1)
-        toolbar.pack_start(button, False, False)
+        toolbar.pack_start(button, False, False, 0)
         # ~ # Agrego el boton "Actualizar"
         #~ btnrefresh = Gtk.Button('Actualizar')
         #~ btnrefresh.connect('clicked',self._refresh)
@@ -75,18 +75,18 @@ class SimpleBrowser:  # needs GTK, Python, Webkit-GTK
 
         # Agrego el renderer del motor
         self.scrolled_window = Gtk.ScrolledWindow()
-        self.webview = webkit.WebView()
+        self.webview = WebKit.WebView()
         self.scrolled_window.add(self.webview)
-        vbox.pack_start(self.scrolled_window, fill=True, expand=True)
+        vbox.pack_start(self.scrolled_window, True, True, 0)
         self.window.add(vbox)
 
         # Agrego un alinea de estado, con una etiqueta y una barra de progreso
         self.pbar = Gtk.ProgressBar()
         self.status = Gtk.Label()
         hbox2 = Gtk.HBox(False, 0)
-        hbox2.pack_start(self.status, False, False)
-        hbox2.pack_end(self.pbar, False, False)
-        vbox.pack_start(hbox2, False, True)
+        hbox2.pack_start(self.status, False, False, 0)
+        hbox2.pack_end(self.pbar, False, False, 0)
+        vbox.pack_start(hbox2, False, True, 0)
 
         # Defino las acciones a realizar segun los eventos del motor html
         self.webview.connect('load-started', self._load_start)

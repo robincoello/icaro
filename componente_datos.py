@@ -14,9 +14,7 @@
 import sys
 from gi.repository import Gtk
 #from os import system
-
 #import time
-
 
 class comp_dat_arg():
     posic_rel_x = 0
@@ -73,9 +71,10 @@ class comp_dat_arg():
             #~ self.img_rect=self.imagen.get_rect()
 
     def dibujar(self):
-        # tomo el valor del texto para agrandar el tamaño del
-        # cuerpo del componente.
-        # si es una imagen le pongo un valor fijo
+        '''
+        Toma el valor del texto para agrandar el tamaño del cuerpo
+        del componente. Si es una imagen le pongo un valor fijo
+        '''
 
         TamaComp = 0
         if self.tipo == 7:
