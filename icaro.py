@@ -121,6 +121,182 @@ class fondo(MotorCairo, Componentes):
                     self.band = 0
 
 # ========================================================================
+# FUNCIONES PARA COMPILAR Y CARGAR EL FIRMWARE
+# ========================================================================
+class tool_compilador:
+    def __init__():
+        pass
+   # cargo template.pde para tener la planilla estandar dentro de
+    # cadena_pinguino
+    # la idea es poder separar estas funciones de icaro.py y trabajarlo
+    # directamente desde otro archivo, asi es mas facil armar bloques
+    # personalizados
+    def carga(self):
+        self.cadena_pinguino[:] = []
+        dir_conf = os.path.expanduser('~') + "/.icaro/firmware/"
+        archivo = open(dir_conf + "/source/template.pde", "r")
+        for linea in archivo:
+            self.cadena_pinguino.append(linea)
+
+    def compilar(self, b):
+        pagina = self.notebook2.get_current_page()
+        if pagina == 0:
+            self.carga()
+            crear.crear_archivo(self.fondo, self)
+            dir_conf = os.path.expanduser('~') + "/.icaro/firmware"
+            i= util.compilar("main",self.cfg,dir_conf)
+            #i = carga.compilar_pic("main", self.cfg)
+            if i == 1:
+                self.mensajes(0, ("no se encuentra el compilador sdcc en" +
+                                    " la ruta " + self.config[0] +
+                                    " . Pruebe configurar el archivo" +
+                                    " config.ini y corregirlo"))
+            if i == 0:
+                self.mensajes(3, "la compilacion fue exitosa")
+            else:
+                self.mensajes(0, "hubo un error de compilacion")
+        if pagina == 1:
+            self.ver.compilar(0)
+
+    def upload(self, b):
+        resultado = 1
+        #dir_conf = os.path.expanduser('~') + "/.icaro/firmware"
+        i = util.linker("main",self.cfg)
+        #i = carga.upload_pic("main", self.cfg)
+        if i == 0:
+            cargador = carga.Cargador("main")
+            cargador.start()
+            return 0
+
+    def comp_esp(self, b,datos):
+        resultado = 1
+        comp = 1
+        dir_conf = os.path.expanduser('~') + "/.icaro/firmware"
+        i= util.compilar(datos,self.cfg,dir_conf)
+        #i = carga.compilar_pic(datos, self.cfg)
+        if i == 0:
+            self.mensajes(3, "la compilacion fue exitosa")
+            comp = 0
+        else:
+            self.mensajes(0, "hubo un error de compilacion")
+            comp = 1
+        if comp == 0:
+            i = util.linker(datos,self.cfg)
+            #i = carga.upload_pic(datos, self.cfg)
+            if i == 0:
+                cargador = carga.Cargador(datos)
+                cargador.start()
+                return 0
+###############################################################################
+
+
+class crear_comp:
+    def __init__():
+        pass
+    def crear_componente(self, b, x, y):
+        ax = ay = 30
+        # siempre hay que tratar de que el foco quede en el drawing area
+        self.area.grab_focus()
+
+        if self.diccionario[b][1] == 1:
+            c1 = componente(
+                            x ,
+                            y ,
+                            self.fondo.identificador + 1,
+                            self.diccionario[b][2],
+                            self.diccionario[b][3],
+                            self.diccionario[b][0],
+                            self.fondo,
+                            self
+
+                            )
+            self.fondo.identificador += 1
+            self.fondo.objetos.append(c1)
+            self.fondo.tipo_obj.append(self.diccionario[b][1])
+            self.fondo.lista_ordenada.append(0)
+        if self.diccionario[b][1] == 4:
+
+            self.fondo.identificador += 1
+            c1 = componente_cero_arg(
+                                    x ,
+                                    y ,
+                                    self.fondo.identificador,
+                                    self.diccionario[b][3],
+                                    self.diccionario[b][0],
+                                    self.fondo,
+                                    self
+                                    )
+
+            self.fondo.objetos.append(c1)
+            self.fondo.tipo_obj.append(self.diccionario[b][1])
+            self.fondo.lista_ordenada.append(0)
+
+        if self.diccionario[b][1] == 5:
+            self.fondo.identificador += 1
+            c1 = componente_bloque_uno(
+                                            x ,
+                                            y ,
+                                            self.fondo.identificador,
+                                            self.diccionario[b][3],
+                                            self.diccionario[b][0],
+                                            self.fondo,
+                                            self,
+                                            )
+            self.fondo.objetos.append(c1)
+            self.fondo.identificador += 1
+            self.fondo.lista_ordenada.append(0)
+
+            c1 = componente_bloque_dos(
+                                        x ,
+                                        y + 80,
+                                        self.fondo.identificador,
+                                        self.diccionario[b][3],
+                                        self.diccionario[b][4],
+                                        self.fondo,
+                                        self
+                                        )
+            self.fondo.objetos.append(c1)
+            self.fondo.tipo_obj.append(self.diccionario[b][1])
+            self.fondo.tipo_obj.append(0)
+            self.fondo.lista_ordenada.append(0)
+
+        if self.diccionario[b][1] == 6:
+            c1 = comp_dat_arg(
+                            x,
+                            y,
+                            self.fondo.identificador_dat,
+                            self.diccionario[b][2],
+                            self.diccionario[b][4],
+                            self.diccionario[b][3],
+                            self.diccionario[b][5],
+                            self.diccionario[b][0].strip(" ") + ".png",
+                            6,
+                            self.fondo,
+                            self,
+                            )
+            self.fondo.identificador_dat += 1
+            self.fondo.objetos_datos.append(c1)
+            self.fondo.tipo_obj_datos.append(self.diccionario[b][1])
+        if self.diccionario[b][1] == 7:
+            c1 = comp_dat_arg(
+                            x,
+                            y,
+                            self.fondo.identificador_dat,
+                            self.diccionario[b][2],
+                            self.diccionario[b][4],
+                            self.diccionario[b][3],
+                            self.diccionario[b][5],
+                            self.diccionario[b][0].strip(" ") + ".png",
+                            7,
+                            self.fondo,
+                            self,
+                            )
+            self.fondo.identificador_dat += 1
+            self.fondo.objetos_datos.append(c1)
+            self.fondo.tipo_obj_datos.append(self.diccionario[b][1])
+
+
+# ========================================================================
 # VENTANA
 # ========================================================================
 
@@ -220,16 +396,13 @@ class Ventana:
         self.lista = self.diccionario.keys()
         self.lista.sort()
         self.carga_paleta()
-        # cargo la configuracion de icaro
-        self.cfg = ConfigParser.ConfigParser()
-        self.cfg.read("config.ini")
-
-        conf = open(sys.path[0] + "/config.dat", "r")
-        dat = conf.readlines()
-        for txt in dat:
-            self.config.append(txt)
-        conf.close()
-
+        conf_ini=os.path.expanduser('~') + "/.icaro/conf/config.ini"
+        if os.path.exists(conf_ini):
+            self.cfg = util.carga_conf(conf_ini)
+        else:
+           self.recarga_conf(False)
+        # configuraciones generales de ICARO (guardadas en config.ini)
+        self.z=float(self.cfg.get("icaro_config","zoom"))
         # declaro la ventana principal
         # esta es la toolbar donde van los botones para cargar los datos
         # y compilar
@@ -320,31 +493,30 @@ class Ventana:
             [2, toolbar, sys.path[0] + "/imagenes/compilar.png",
              "Load", self.tooltip["cargar"], self.upload, None],
             [2, toolbar, sys.path[0] + "/imagenes/tortucaro.png",
-             "Tortucaro", self.tooltip["tortucaro"], self.comp_esp, "tortucaro"],
-
+             "Tortucaro", self.tooltip["tortucaro"], self.comp_esp, "tortucaro/tortucaro"],
             [2, toolbar, sys.path[0] + "/imagenes/pilas.png",
-             "pilas", self.tooltip["tortucaro"], self.comp_esp, "pilas-engine"],
-
+             "pilas", self.tooltip["tortucaro"], self.comp_esp, "pilas/pilas-engine"],
             [3],
-            [1, toolbar, Gtk.STOCK_HELP, "Help",
+            [1, toolbar, gtk.STOCK_HELP, "Help",
              self.tooltip["ayuda"], self.ayuda, None],
             [3],
-            [1, toolbar, Gtk.STOCK_ADD, "Pen",
+            [1, toolbar, gtk.STOCK_ADD, "Pen",
              self.tooltip["lapiz"], self.dibujo, 1],
-            [1, toolbar, Gtk.STOCK_SELECT_COLOR, "Move",
+            [1, toolbar, gtk.STOCK_SELECT_COLOR, "Move",
              self.tooltip["mover"], self.dibujo, 2],
-            [1, toolbar, Gtk.STOCK_DELETE, "Erase",
+            [1, toolbar, gtk.STOCK_DELETE, "Erase",
              self.tooltip["borrar"], self.dibujo, 3],
-            [1, toolbar, Gtk.STOCK_EDIT,
+            [1, toolbar, gtk.STOCK_EDIT,
              "Edit", "", self.dibujo, 4],
             [3],
-            [1, toolbar, Gtk.STOCK_ZOOM_IN, "agrandar",
+            [1, toolbar, gtk.STOCK_ZOOM_IN, "agrandar",
              "", self.menuitem_response, "zoomas"],
-            [1, toolbar, Gtk.STOCK_ZOOM_OUT, "achicar",
+            [1, toolbar, gtk.STOCK_ZOOM_OUT, "achicar",
              "", self.menuitem_response, "zoomenos"],
-            [1, toolbar, Gtk.STOCK_ZOOM_100, "zoom 1:1",
-             "", self.menuitem_response, "zoomcero"]
-        ]
+            [1, toolbar, gtk.STOCK_ZOOM_100, "zoom 1:1",
+             "", self.menuitem_response, "zoomcero"],
+             ]
+
         # creo los botones de la toolbar en funcion de la tupla botonas_toolbar
         for dat in botones_toolbar:
             if dat[0] == 3:
@@ -813,7 +985,10 @@ class Ventana:
         self.archivo = ""
         nuevo.nuevo(self.fondo)
         self.fondo.band = 0
-        self.fondo.FONDO = (00, 22, 55)
+        R=self.cfg.get("icaro_config","colorR")
+        G=self.cfg.get("icaro_config","colorG")
+        B=self.cfg.get("icaro_config","colorB")
+        self.fondo.FONDO = (int(R), int(G), int(B))
         self.fondo.ultimo = 1
         inicial = componente_inicial(
                                     20,
@@ -1061,14 +1236,31 @@ class Ventana:
         if string == "zoomcero":
             self.z = 1
         if string == "firmware":
-            dir_conf = os.path.expanduser('~') + "/.icaro/firmware/"
-            np05 = "/usr/share/icaro/pic16/np05"
+            self.recarga_conf(True)
+
+    def recarga_conf(self,visual):
+        dir_firm = os.path.expanduser('~') + "/.icaro/firmware/"
+        dir_conf = os.path.expanduser('~') + "/.icaro/conf/"
+        np05 = "/usr/share/icaro/pic16/np05"
+        conf = "/usr/share/icaro/pic16/conf"
+        if visual==True:
+            resp=self.mensajes(1, "se volvera a la versión por defecto del firmware y la configuracion general, desea continuar")
+        else:
+            resp=True
+        if resp==True:
             try:
                 os.system("rm -rf " + dir_conf)
-                os.system("cp -R " + np05 + " " + dir_conf)
-                self.mensajes(0, "se actualizo el firmware ")
+                os.system("cp -R " + np05 + " " + dir_firm)
+                os.system("cp -R " + conf + " " + dir_conf)
+                if visual==True:
+                    self.mensajes(3, "se actualizo el firmware y la conf general")
+                else:
+                    print "se actualizo el firmware y la configuración general"
             except:
-                self.mensajes(0, "no se pudo actualizar el firmware")
+                if visual==True:
+                    self.mensajes(0, "no se pudo actualizar el firmware")
+                else:
+                    print "hubo un error copiando el firmware y la configuración general"
 
     def visor(self, dir):
         browser = navegador.SimpleBrowser()
@@ -1128,7 +1320,12 @@ ventana_principal.fondo = fon
 inicial = componente_inicial(20, 50, 1, fon, ventana_principal)
 fon.objetos.append(inicial)
 ventana_principal.window1.show_all()
-GObject.timeout_add(50, ventana_principal.timeout)
-# GObject.idle_add(ventana_principal.timeout)
-# GObject.PRIORITY_DEFAULT=-1
-Gtk.main()
+R=ventana_principal.cfg.get("icaro_config","colorR")
+G=ventana_principal.cfg.get("icaro_config","colorG")
+B=ventana_principal.cfg.get("icaro_config","colorB")
+ventana_principal.fondo.FONDO = (int(R), int(G), int(B))
+
+gobject.timeout_add(50, ventana_principal.timeout)
+# gobject.idle_add(ventana_principal.timeout)
+# gobject.PRIORITY_DEFAULT=-1
+gtk.main()
