@@ -34,7 +34,7 @@ from gi.repository import GObject
 from motor import MotorCairo
 from componente_inicial import *
 from componente import *
-
+import util
 
 #import re
 #import shutil
@@ -497,23 +497,23 @@ class Ventana:
             [2, toolbar, sys.path[0] + "/imagenes/pilas.png",
              "pilas", self.tooltip["tortucaro"], self.comp_esp, "pilas/pilas-engine"],
             [3],
-            [1, toolbar, gtk.STOCK_HELP, "Help",
+            [1, toolbar, Gtk.STOCK_HELP, "Help",
              self.tooltip["ayuda"], self.ayuda, None],
             [3],
-            [1, toolbar, gtk.STOCK_ADD, "Pen",
+            [1, toolbar, Gtk.STOCK_ADD, "Pen",
              self.tooltip["lapiz"], self.dibujo, 1],
-            [1, toolbar, gtk.STOCK_SELECT_COLOR, "Move",
+            [1, toolbar, Gtk.STOCK_SELECT_COLOR, "Move",
              self.tooltip["mover"], self.dibujo, 2],
-            [1, toolbar, gtk.STOCK_DELETE, "Erase",
+            [1, toolbar, Gtk.STOCK_DELETE, "Erase",
              self.tooltip["borrar"], self.dibujo, 3],
-            [1, toolbar, gtk.STOCK_EDIT,
+            [1, toolbar, Gtk.STOCK_EDIT,
              "Edit", "", self.dibujo, 4],
             [3],
-            [1, toolbar, gtk.STOCK_ZOOM_IN, "agrandar",
+            [1, toolbar, Gtk.STOCK_ZOOM_IN, "agrandar",
              "", self.menuitem_response, "zoomas"],
-            [1, toolbar, gtk.STOCK_ZOOM_OUT, "achicar",
+            [1, toolbar, Gtk.STOCK_ZOOM_OUT, "achicar",
              "", self.menuitem_response, "zoomenos"],
-            [1, toolbar, gtk.STOCK_ZOOM_100, "zoom 1:1",
+            [1, toolbar,Gtk.STOCK_ZOOM_100, "zoom 1:1",
              "", self.menuitem_response, "zoomcero"],
              ]
 
@@ -1325,7 +1325,7 @@ G=ventana_principal.cfg.get("icaro_config","colorG")
 B=ventana_principal.cfg.get("icaro_config","colorB")
 ventana_principal.fondo.FONDO = (int(R), int(G), int(B))
 
-gobject.timeout_add(50, ventana_principal.timeout)
+GObject.timeout_add(50, ventana_principal.timeout)
 # gobject.idle_add(ventana_principal.timeout)
 # gobject.PRIORITY_DEFAULT=-1
-gtk.main()
+Gtk.main()
