@@ -11,13 +11,10 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 
-#import sys
-#import re
 from gi.repository import Gtk
-#from gi.repository import GObject
 from gi.repository import WebKit
+from gettext import gettext as _
 DEFAULT_URL = "http://roboticaro.org/documentacion/index.html"
-# sys.path[0]+'/documentos/publican/manual_np05/tmp/es-ES/html/index.html'
 
 
 class SimpleBrowser:  # needs GTK, Python, Webkit-GTK
@@ -32,11 +29,9 @@ class SimpleBrowser:  # needs GTK, Python, Webkit-GTK
         vbox.set_border_width(5)
         self.txt_url = Gtk.Entry()
         self.txt_url.connect('activate', self._txt_url_activate)
-#~
         # Genero una barra de herramientas
         toolbar = Gtk.HBox(spacing=5)
         vbox.pack_start(toolbar, False, False, 1)
-#~
         # Agrego el boton "Atras"
         self.btnback = Gtk.Button()
         self.btnback.add(Gtk.Arrow(Gtk.ArrowType.LEFT, Gtk.ShadowType.OUT))
@@ -56,22 +51,20 @@ class SimpleBrowser:  # needs GTK, Python, Webkit-GTK
         button.connect('clicked', self.close)
         toolbar.pack_start(button, False, False, 0)
         # Agrego el boton de "zoom"
-        button = Gtk.Button(_('increase'))
-        button.connect('clicked', self.zoom, 0)
+        button = Gtk.Button(_('Increase'))
+        button.connect('clicked', self.zoom, 1)
         toolbar.pack_start(button, False, False, 0)
         button = Gtk.Button(_('Decrease'))
         button.connect('clicked', self.zoom, -1)
         toolbar.pack_start(button, False, False, 0)
-        # ~ # Agrego el boton "Actualizar"
-        #~ btnrefresh = Gtk.Button('Actualizar')
-        #~ btnrefresh.connect('clicked',self._refresh)
-        #~ toolbar.pack_start(btnrefresh,False,False)
-#~
-        # ~ # Agrego la barra de direcciones
-        #~ self.text = Gtk.Entry()
-        #~ self.text.connect('activate',self._open_bar_url)
-        #~ toolbar.pack_start(self.text,True,True)
-#~
+        #  Agrego el boton "Actualizar"
+        # btnrefresh = Gtk.Button('Actualizar')
+        # btnrefresh.connect('clicked',self._refresh)
+        # toolbar.pack_start(btnrefresh,False,False)
+        #  Agrego la barra de direcciones
+        # self.text = Gtk.Entry()
+        # self.text.connect('activate',self._open_bar_url)
+        # toolbar.pack_start(self.text,True,True)
 
         # Agrego el renderer del motor
         self.scrolled_window = Gtk.ScrolledWindow()
@@ -107,8 +100,8 @@ class SimpleBrowser:  # needs GTK, Python, Webkit-GTK
 
     def open(self, url):
         # Si la url no tiene el http:// adelante, se lo agrego
-        #~ if url[0:7] != "http://":
-            #~ url = "http://"+url
+        # if url[0:7] != "http://":
+            # url = "http://"+url
         self.txt_url.set_text(url)
         self._load(url)
 
@@ -122,11 +115,11 @@ class SimpleBrowser:  # needs GTK, Python, Webkit-GTK
             self.tam == 0
 
     def close(self, arg):
-        #~ Gtk.main_quit()
+        # Gtk.main_quit()
         self.window.hide()
 
     def close_application(self, widget, event, data=None):
-        #~ Gtk.main_quit()
+        # Gtk.main_quit()
         self.window.hide()
 
     def _load_start(self, view, nadas):

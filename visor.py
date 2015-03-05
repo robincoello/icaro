@@ -23,6 +23,7 @@ import carga
 from gi.repository import Gtk
 from gi.repository import GtkSource
 from gi.repository import Pango
+from gettext import gettext as _
 
 
 class visor_codigo():
@@ -35,27 +36,15 @@ class visor_codigo():
         self.buffer.set_language(lang)
         view = GtkSource.View.new_with_buffer(self.buffer)
         self.ventana = ventana
-        #self.window = Gtk.Window(Gtk.WindowType.TOPLEVEL)
-        #self.window.set_border_width(0)
-        #self.window.set_title('codigo fuente generado por el sistema')
-        #windows.append(window) # this list contains all view windows
-        #self.window.set_default_size(500, 500)
-        #self.window.show()
 
         vbox = Gtk.VBox(0, True)
-        #self.window.add(vbox)
-        notebook.append_page(vbox, Gtk.Label(label="codigo fuente"))
+        # self.window.add(vbox)
+        notebook.append_page(vbox, Gtk.Label(label=_("Código fuente")))
         tool1 = Gtk.Toolbar()
         tool1.show()
 
         iconw = Gtk.Image()
         iconw.set_from_stock(Gtk.STOCK_EXECUTE, 15)
-        # tool_button = tool1.append_item(
-        #                _("Compile"),
-        #                "compila la version modificada en el editor.",
-        #                "Private",
-        #                iconw,
-        #                self.compilar)
 
         vbox.pack_start(tool1, False, False, False)
         sw = Gtk.ScrolledWindow()
@@ -63,22 +52,16 @@ class visor_codigo():
         sw.add(view)
         vbox.pack_start(sw, True, True, False)
 
-        #~ toolbar = Gtk.HBox(spacing=0)
-        #~ vbox.pack_start(toolbar,False,False)
-        #~ button = Gtk.Button('salir')
-        #~ button.connect('clicked',self.close)
-        #~ toolbar.pack_start(button,False,False,0)
-
         vbox.show_all()
         # main loop
         dir_conf = os.path.expanduser('~') + "/.icaro/firmware/"
         self.cadena_user_c = dir_conf + "source/user.c"
-        #COMENTADO POR MIGRACION
-        #self.buf = self.open_file(self.buffer, self.cadena_user_c)
+        # COMENTADO POR MIGRACION
+        # self.buf = self.open_file(self.buffer, self.cadena_user_c)
         iconw = Gtk.Image()
         iconw.set_from_stock(Gtk.STOCK_NEW, 15)
-        #COMENTADO EN MIGRACION
-        #tool_button = tool1.append_item(
+        # COMENTADO EN MIGRACION
+        # tool_button = tool1.append_item(
         #    "recargar",
         #    "",
         #    "Private",

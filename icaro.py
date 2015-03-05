@@ -33,6 +33,7 @@ from gi.repository import GObject
 from motor import MotorCairo
 from componente_inicial import *
 from componente import *
+from gettext import gettext as _
 import util
 
 # ========================================================================
@@ -188,23 +189,24 @@ class tool_compilador:
 class crear_comp:
     def __init__():
         pass
+
     def crear_componente(self, b, x, y):
-        ax = ay = 30
+        ay = 30
+        ax = ay
         # siempre hay que tratar de que el foco quede en el drawing area
         self.area.grab_focus()
 
         if self.diccionario[b][1] == 1:
             c1 = componente(
-                            x ,
-                            y ,
-                            self.fondo.identificador + 1,
-                            self.diccionario[b][2],
-                            self.diccionario[b][3],
-                            self.diccionario[b][0],
-                            self.fondo,
-                            self
-
-                            )
+                x,
+                y,
+                self.fondo.identificador + 1,
+                self.diccionario[b][2],
+                self.diccionario[b][3],
+                self.diccionario[b][0],
+                self.fondo,
+                self
+            )
             self.fondo.identificador += 1
             self.fondo.objetos.append(c1)
             self.fondo.tipo_obj.append(self.diccionario[b][1])
@@ -213,14 +215,14 @@ class crear_comp:
 
             self.fondo.identificador += 1
             c1 = componente_cero_arg(
-                                    x ,
-                                    y ,
-                                    self.fondo.identificador,
-                                    self.diccionario[b][3],
-                                    self.diccionario[b][0],
-                                    self.fondo,
-                                    self
-                                    )
+                x,
+                y,
+                self.fondo.identificador,
+                self.diccionario[b][3],
+                self.diccionario[b][0],
+                self.fondo,
+                self
+            )
 
             self.fondo.objetos.append(c1)
             self.fondo.tipo_obj.append(self.diccionario[b][1])
@@ -229,27 +231,27 @@ class crear_comp:
         if self.diccionario[b][1] == 5:
             self.fondo.identificador += 1
             c1 = componente_bloque_uno(
-                                            x ,
-                                            y ,
-                                            self.fondo.identificador,
-                                            self.diccionario[b][3],
-                                            self.diccionario[b][0],
-                                            self.fondo,
-                                            self,
-                                            )
+                x,
+                y,
+                self.fondo.identificador,
+                self.diccionario[b][3],
+                self.diccionario[b][0],
+                self.fondo,
+                self,
+            )
             self.fondo.objetos.append(c1)
             self.fondo.identificador += 1
             self.fondo.lista_ordenada.append(0)
 
             c1 = componente_bloque_dos(
-                                        x ,
-                                        y + 80,
-                                        self.fondo.identificador,
-                                        self.diccionario[b][3],
-                                        self.diccionario[b][4],
-                                        self.fondo,
-                                        self
-                                        )
+                x,
+                y + 80,
+                self.fondo.identificador,
+                self.diccionario[b][3],
+                self.diccionario[b][4],
+                self.fondo,
+                self
+            )
             self.fondo.objetos.append(c1)
             self.fondo.tipo_obj.append(self.diccionario[b][1])
             self.fondo.tipo_obj.append(0)
@@ -257,35 +259,35 @@ class crear_comp:
 
         if self.diccionario[b][1] == 6:
             c1 = comp_dat_arg(
-                            x,
-                            y,
-                            self.fondo.identificador_dat,
-                            self.diccionario[b][2],
-                            self.diccionario[b][4],
-                            self.diccionario[b][3],
-                            self.diccionario[b][5],
-                            self.diccionario[b][0].strip(" ") + ".png",
-                            6,
-                            self.fondo,
-                            self,
-                            )
+                x,
+                y,
+                self.fondo.identificador_dat,
+                self.diccionario[b][2],
+                self.diccionario[b][4],
+                self.diccionario[b][3],
+                self.diccionario[b][5],
+                self.diccionario[b][0].strip(" ") + ".png",
+                6,
+                self.fondo,
+                self,
+            )
             self.fondo.identificador_dat += 1
             self.fondo.objetos_datos.append(c1)
             self.fondo.tipo_obj_datos.append(self.diccionario[b][1])
         if self.diccionario[b][1] == 7:
             c1 = comp_dat_arg(
-                            x,
-                            y,
-                            self.fondo.identificador_dat,
-                            self.diccionario[b][2],
-                            self.diccionario[b][4],
-                            self.diccionario[b][3],
-                            self.diccionario[b][5],
-                            self.diccionario[b][0].strip(" ") + ".png",
-                            7,
-                            self.fondo,
-                            self,
-                            )
+                x,
+                y,
+                self.fondo.identificador_dat,
+                self.diccionario[b][2],
+                self.diccionario[b][4],
+                self.diccionario[b][3],
+                self.diccionario[b][5],
+                self.diccionario[b][0].strip(" ") + ".png",
+                7,
+                self.fondo,
+                self,
+            )
             self.fondo.identificador_dat += 1
             self.fondo.objetos_datos.append(c1)
             self.fondo.tipo_obj_datos.append(self.diccionario[b][1])
@@ -391,13 +393,13 @@ class Ventana:
         self.lista = self.diccionario.keys()
         self.lista.sort()
         self.carga_paleta()
-        conf_ini=os.path.expanduser('~') + "/.icaro/conf/config.ini"
+        conf_ini = os.path.expanduser('~') + "/.icaro/conf/config.ini"
         if os.path.exists(conf_ini):
             self.cfg = util.carga_conf(conf_ini)
         else:
-           self.recarga_conf(False)
+            self.recarga_conf(False)
         # configuraciones generales de ICARO (guardadas en config.ini)
-        self.z=float(self.cfg.get("icaro_config","zoom"))
+        self.z = float(self.cfg.get("icaro_config", "zoom"))
         # declaro la ventana principal
         # esta es la toolbar donde van los botones para cargar los datos
         # y compilar
@@ -421,7 +423,7 @@ class Ventana:
 
         # empaqueto todo
         # esta es la idea de usar un hpaned para poder achicar la pantalla
-        #, en las netbook no entra todo
+        # en las netbook no entra todo
         self.window1.add(box1)
         box1.pack_start(menu_bar, False, True, 1)
         box1.pack_start(box2, True, True, 1)
@@ -429,12 +431,13 @@ class Ventana:
         scrolled_window3.add_with_viewport(toolbar)
         scrolled_window2.add_with_viewport(notebook)
 
-        self.notebook2.append_page(scrolled_window, Gtk.Label(label="bloques"))
+        self.notebook2.append_page(scrolled_window,
+                                   Gtk.Label(label=_("Bloques")))
         box2.pack_start(scrolled_window3, False, False, 1)
         box2.pack_start(hp, True, True, 1)
         hp.pack1(self.notebook2, True, True)
         hp.pack2(scrolled_window2, True, True)
-        #Add source code viewer tab
+        # Add source code viewer tab
         self.ver = visor.visor_codigo(self, self.notebook2)
 
         hp.set_position(500)
@@ -445,12 +448,12 @@ class Ventana:
         )
         self.area.set_app_paintable(True)
         self.area.set_size_request(800, 800)
-        menu1 = [_("File"), _("Edit"), "herramientas"]
+        menu1 = [_("File"), _("Edit"), _("Tools")]
         menu_general = [
             (_("New"), _("Open"), _("Save"), _("Save as"),
              _("Save as function"), _("Examples"), _("Exit")),
             (_("Background"), _("Color"), _("About"), _("Config")),
-            ("graficador", "calculadora", _("Log"), "firmware")
+            (_("Graphic"), _("Calc"), _("Log"), _("Firmware"))
         ]
         menu_bar.show()
         # declaro los botones del menu 'menu'5 y 'edicion'
@@ -488,9 +491,11 @@ class Ventana:
             [2, toolbar, sys.path[0] + "/imagenes/compilar.png",
              "Load", self.tooltip["cargar"], self.upload, None],
             [2, toolbar, sys.path[0] + "/imagenes/tortucaro.png",
-             "Tortucaro", self.tooltip["tortucaro"], self.comp_esp, "tortucaro/tortucaro"],
+             "Tortucaro", self.tooltip["tortucaro"],
+             self.comp_esp, "tortucaro/tortucaro"],
             [2, toolbar, sys.path[0] + "/imagenes/pilas.png",
-             "pilas", self.tooltip["tortucaro"], self.comp_esp, "pilas/pilas-engine"],
+             "Pilas", self.tooltip["tortucaro"],
+             self.comp_esp, "pilas/pilas-engine"],
             [3],
             [1, toolbar, Gtk.STOCK_HELP, "Help",
              self.tooltip["ayuda"], self.ayuda, None],
@@ -504,11 +509,11 @@ class Ventana:
             [1, toolbar, Gtk.STOCK_EDIT,
              "Edit", "", self.dibujo, 4],
             [3],
-            [1, toolbar, Gtk.STOCK_ZOOM_IN, "agrandar",
+            [1, toolbar, Gtk.STOCK_ZOOM_IN, "Agrandar",
              "", self.menuitem_response, "zoomas"],
-            [1, toolbar, Gtk.STOCK_ZOOM_OUT, "achicar",
+            [1, toolbar, Gtk.STOCK_ZOOM_OUT, "Achicar",
              "", self.menuitem_response, "zoomenos"],
-            [1, toolbar,Gtk.STOCK_ZOOM_100, "zoom 1:1",
+            [1, toolbar,Gtk.STOCK_ZOOM_100, "Zoom 1:1",
              "", self.menuitem_response, "zoomcero"],
              ]
 
