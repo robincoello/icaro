@@ -25,23 +25,15 @@ import tooltips
 import config
 import graficador
 import cairo
-#Gtk3
+
 from gi.repository import Gtk
 from gi.repository import Gdk
 from gi.repository import GObject
 
-#from subprocess import Popen, PIPE, STDOUT
 from motor import MotorCairo
 from componente_inicial import *
 from componente import *
 import util
-
-#import re
-#import shutil
-#import gi
-#import cairo
-#import lenguaje
-
 
 # ========================================================================
 # COMPONENTES
@@ -123,15 +115,20 @@ class fondo(MotorCairo, Componentes):
 # ========================================================================
 # FUNCIONES PARA COMPILAR Y CARGAR EL FIRMWARE
 # ========================================================================
+
+
 class tool_compilador:
     def __init__():
         pass
-   # cargo template.pde para tener la planilla estandar dentro de
-    # cadena_pinguino
-    # la idea es poder separar estas funciones de icaro.py y trabajarlo
-    # directamente desde otro archivo, asi es mas facil armar bloques
-    # personalizados
+
     def carga(self):
+        '''
+        cargo template.pde para tener la planilla estandar dentro de
+        cadena_pinguino
+        la idea es poder separar estas funciones de icaro.py y trabajarlo
+        directamente desde otro archivo, asi es mas facil armar bloques
+        personalizados
+        '''
         self.cadena_pinguino[:] = []
         dir_conf = os.path.expanduser('~') + "/.icaro/firmware/"
         archivo = open(dir_conf + "/source/template.pde", "r")
@@ -144,14 +141,14 @@ class tool_compilador:
             self.carga()
             crear.crear_archivo(self.fondo, self)
             dir_conf = os.path.expanduser('~') + "/.icaro/firmware"
-            i= util.compilar("main",self.cfg,dir_conf)
-            #i = carga.compilar_pic("main", self.cfg)
+            i = util.compilar("main", self.cfg, dir_conf)
+            # i = carga.compilar_pic("main", self.cfg)
             if i == 1:
                 self.mensajes(0, ("no se encuentra el compilador sdcc en" +
-                                    " la ruta " + self.config[0] +
-                                    " . Pruebe configurar el archivo" +
-                                    " config.ini y corregirlo"))
-            if i == 0:
+                                  " la ruta " + self.config[0] +
+                                  " . Pruebe configurar el archivo" +
+                                  " config.ini y corregirlo"))
+            elif i == 0:
                 self.mensajes(3, "la compilacion fue exitosa")
             else:
                 self.mensajes(0, "hubo un error de compilacion")
@@ -159,21 +156,19 @@ class tool_compilador:
             self.ver.compilar(0)
 
     def upload(self, b):
-        resultado = 1
-        #dir_conf = os.path.expanduser('~') + "/.icaro/firmware"
-        i = util.linker("main",self.cfg)
-        #i = carga.upload_pic("main", self.cfg)
+        # dir_conf = os.path.expanduser('~') + "/.icaro/firmware"
+        i = util.linker("main", self.cfg)
+        # i = carga.upload_pic("main", self.cfg)
         if i == 0:
             cargador = carga.Cargador("main")
             cargador.start()
             return 0
 
-    def comp_esp(self, b,datos):
-        resultado = 1
+    def comp_esp(self, b, datos):
         comp = 1
         dir_conf = os.path.expanduser('~') + "/.icaro/firmware"
-        i= util.compilar(datos,self.cfg,dir_conf)
-        #i = carga.compilar_pic(datos, self.cfg)
+        i = util.compilar(datos, self.cfg, dir_conf)
+        # i = carga.compilar_pic(datos, self.cfg)
         if i == 0:
             self.mensajes(3, "la compilacion fue exitosa")
             comp = 0
@@ -181,8 +176,8 @@ class tool_compilador:
             self.mensajes(0, "hubo un error de compilacion")
             comp = 1
         if comp == 0:
-            i = util.linker(datos,self.cfg)
-            #i = carga.upload_pic(datos, self.cfg)
+            i = util.linker(datos, self.cfg)
+            # i = carga.upload_pic(datos, self.cfg)
             if i == 0:
                 cargador = carga.Cargador(datos)
                 cargador.start()
