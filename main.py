@@ -85,9 +85,9 @@ class VentanaGtk(MotorCairo):
             rectmouse = (self.mousexy[0], self.mousexy[1], 10, 10)
             presionado = self.colliderect(boton.rect, rectmouse)
             # print presionado,"--",self.yatocado
-            if presionado == None:
+            if presionado is None:
                 presionado = False
-            if presionado == True and self.yatocado <> boton.ide:
+            if presionado is True and self.yatocado != boton.ide:
                 self.yatocado = boton.ide
                 self.ff = self.area.get_window().cairo_create()
                 rgb = self.color(self.FONDO)
