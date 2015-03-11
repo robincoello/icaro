@@ -89,11 +89,11 @@ class VentanaGtk(MotorCairo):
                 presionado = False
             if presionado == True and self.yatocado <> boton.ide:
                 self.yatocado = boton.ide
-                self.ff = self.area.window.cairo_create()
+                self.ff = self.area.get_window().cairo_create()
                 rgb = self.color(self.FONDO)
                 self.ff.set_source_rgb(rgb[0], rgb[1], rgb[2])
                 self.ff.paint()
-                self.cr = self.area.window.cairo_create()
+                self.cr = self.area.get_window().cairo_create()
                 y = 100
                 for t in boton.texto:
                     self.texto(t, 300, y, (255, 255, 255), self.cr)
