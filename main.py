@@ -25,9 +25,8 @@ import sys
 import os
 import grp
 import shutil
-#import urllib
-#import tarfile
 from gi.repository import Gtk
+from gi.repository import Gdk
 
 from motor import MotorCairo
 
@@ -50,7 +49,7 @@ class VentanaGtk(MotorCairo):
         self.area.add_events(Gdk.EventMask.POINTER_MOTION_MASK)
         self.area.connect("button-press-event", self.buttonpress_cb)
         self.area.connect("motion-notify-event", self.move_cb)
-        self.area.connect("expose-event", self.expose)
+        self.area.connect("draw", self.expose)
         self.window.connect("destroy", self.salir)
         self.window.add(self.area)
         self.window.show_all()
@@ -109,7 +108,7 @@ class VentanaGtk(MotorCairo):
         for boton in self.botones:
             # print boton.rect
             presionado = self.collide(boton.rect, event.x, event.y)
-            if presionado == True:
+            if presionado is True:
                 boton.accion()
                 return
 
@@ -117,11 +116,11 @@ class VentanaGtk(MotorCairo):
         Gtk.main_quit()
 
     def fondo(self):
-        self.ff = self.area.window.cairo_create()
+        self.ff = self.area.get_window().cairo_create()
         rgb = self.color(self.FONDO)
         self.ff.set_source_rgb(rgb[0], rgb[1], rgb[2])
         self.ff.paint()
-        self.cr = self.area.window.cairo_create()
+        self.cr = self.area.get_window().cairo_create()
         for boton in self.botones:
             boton.update(self.cr)
 
