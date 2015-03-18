@@ -14,6 +14,243 @@ from gi.repository import Gtk
 import sys
 import forma_basica
 
+###############################################################################
+#
+#     ESQUEMA DE LOS RECTANGULOS QUE REPRESENTAN LAS CONEXIONES DE CADA BLOQUE
+#
+#
+#  Cada rectangulo (x,Y,w,h) representa los puntos de para revizar si un bloque
+#  fue tocado por el mouse o si cada conector esta en contacto con el otro
+#
+#              -------------- conector_h
+#              |      ------- rectan
+#              |      |
+#              v      v
+#       #----#---#------#
+#       |    |   |      |
+#       |    #---#  #---|
+#       |           |   |<--- conector_h_dato (lista_conector_h_datos)
+#       |    #---#  #---|
+#       |    |   |      |
+#       #----#---#------#
+#              A
+#              |
+#              ------------ conector_m
+#
+#
+#
+##############################################################################
+
+
+class FormaSvg(object):
+    """FormaSvg contiene las primitivas para diseñar los componentes.
+    cada funcion devuelve un string (cuerpo) con los datos SVG para generar el bloque
+    las 4 clases de componentes heredan esta clase"""
+    def __init__(self):
+        self.lin1 =self.fondo.crear_nodo_linea(forma_basica.lin1[0],forma_basica.lin1[1])
+        self.lin2 =self.fondo.crear_nodo_linea(forma_basica.lin2[0],forma_basica.lin2[1])
+        self.lin3 =self.fondo.crear_nodo_linea(forma_basica.lin3[0],forma_basica.lin3[1])
+        self.lin4 =self.fondo.crear_nodo_linea(forma_basica.lin4[0],forma_basica.lin4[1])
+        self.lin5 =self.fondo.crear_nodo_linea(forma_basica.lin5[0],forma_basica.lin5[1])
+        self.lin6 =self.fondo.crear_nodo_linea(forma_basica.lin6[0],forma_basica.lin6[1])
+        self.lin7 =self.fondo.crear_nodo_linea(forma_basica.lin7[0],forma_basica.lin7[1])
+        self.lin8 =self.fondo.crear_nodo_linea(forma_basica.lin8[0],forma_basica.lin8[1])
+        self.correccion= self.fondo.crear_nodo_linea(0,-5)
+        self.tam_text = (len(self.texto) * 6)
+        self.lindat1 =self.fondo.crear_nodo_linea(20,0)
+        self.lindat2 =self.fondo.crear_nodo_linea(-20,0)
+        self.lindat3 =self.fondo.crear_nodo_linea(0,-5)
+        self.lindat33 =self.fondo.crear_nodo_linea(0,-5)
+        self.lindat4 =self.fondo.crear_nodo_linea(0,-13)
+        self.lindat5 =self.fondo.crear_nodo_linea(0,-11)
+
+    def crear_comp_dat(self,TamaComp):
+        corr_linea_texto = self.fondo.crear_nodo_linea(TamaComp,0)
+        corr_linea_texto_menos = self.fondo.crear_nodo_linea(TamaComp*-1,0)
+        cuerpo=(self.lindat1 +corr_linea_texto+
+                    forma_basica.nodo_esq_ar_der +
+                    self.lindat3+
+                    forma_basica.nodo_parametros+
+                    self.lindat33+
+                    forma_basica.nodo_esq_ab_der +
+                    self.lindat2 + corr_linea_texto_menos+
+                    forma_basica.nodo_esq_ab_izq +
+                    self.lindat4+
+                    forma_basica.nodo_parametros+
+                    self.lindat5+
+                    forma_basica.nodo_esq_ar_izq)
+        return cuerpo
+
+    def crear_comp_0arg(self):
+        """docstring for crear_comp_0arg"""
+        correccion_cuerpo1=self.fondo.crear_nodo_linea(-37,0)
+        correccion_cuerpo1_2=self.fondo.crear_nodo_linea(10,0)
+        cuerpo2=(self.lin1 +
+                    forma_basica.nodo_esq_ar_der +
+                    self.lin2 +
+                    self.lin3 +
+                    forma_basica.nodo_esq_ab_der +
+                    self.lin4 +
+                    forma_basica.nodo_macho +
+                    self.lin5 +
+                    forma_basica.nodo_esq_ab_izq +
+                    self.lin6 +
+                    self.lin8 +
+                    forma_basica.nodo_esq_ar_izq)
+
+        cuerpo1 = ( forma_basica.nodo_hembra+
+                    correccion_cuerpo1_2+
+                    forma_basica.nodo_esq_ar_der +
+                    self.lin2 +
+                    self.lin3 +
+                    forma_basica.nodo_esq_ab_der +
+                    self.lin4 +
+                    self.lin5 +
+                    correccion_cuerpo1+
+                    forma_basica.nodo_esq_ab_izq +
+                    self.lin6 +
+                    self.lin8 +
+                    forma_basica.nodo_esq_ar_izq)
+        return cuerpo1,cuerpo2
+
+    def crear_comp_1arg(self):
+        """docstring for crear_comp"""
+        for a in range(self.arg):
+            # creo dos lista con los valores del rect
+            # de cada conector que creo
+            # y sus valores.
+            # estas listas son las que parsean los componentes_datos
+            self.lista_conector_h_datos.append((0, 0, 0, 0))
+            self.lista_valores.append("")
+        self.rectan[2]= self.tam_text+110
+        self.linea_corr_texto_mas = self.fondo.crear_nodo_linea(self.tam_text,0)
+        self.linea_corr_texto_menos = self.fondo.crear_nodo_linea(self.tam_text*-1,0)
+        achicar_cuerpo_1= self.fondo.crear_nodo_linea(0,-17)
+        achicar_cuerpo_2= self.fondo.crear_nodo_linea(0,17)
+        cuerpo=(
+                    forma_basica.nodo_hembra +
+                    self.lin1+ self.linea_corr_texto_mas +
+                    forma_basica.nodo_esq_ar_der +
+                    self.lin2 )
+        if self.arg==0:
+            cuerpo=(cuerpo +
+                        self.lin3+
+                        self.lin3 )
+
+        for i in range(self.arg):
+            cuerpo=(cuerpo +
+                        forma_basica.nodo_parametros +
+                        self.lin3 )
+        cuerpo=cuerpo+achicar_cuerpo_1
+        cuerpo = (cuerpo +
+                    forma_basica.nodo_esq_ab_der +
+                    self.lin4 +self.lin4+ self.linea_corr_texto_menos+
+                    forma_basica.nodo_macho +
+                    self.lin5 +
+                    forma_basica.nodo_esq_ab_izq+self.lin6+achicar_cuerpo_2)
+        if self.arg==0:
+            cuerpo=(cuerpo +
+                    self.lin6 +
+                    self.lin6 +
+                    self.lin8 )
+        for i in range(self.arg):
+            cuerpo=(cuerpo + self.lin7 +self.lin8 )
+        if self.arg>1:
+            for i in range(1,self.arg):
+                cuerpo=cuerpo+self.correccion
+        cuerpo = (cuerpo +forma_basica.nodo_esq_ar_izq)
+        return cuerpo
+
+    def crear_comp_bloque_2(self):
+        self.linea_corr_texto_mas = self.fondo.crear_nodo_linea(self.tam_text,0)
+        self.linea_corr_texto_menos = self.fondo.crear_nodo_linea(self.tam_text*-1,0)
+        linea_bloque_mas = self.fondo.crear_nodo_linea(100,0)
+        linea_bloque_menos = self.fondo.crear_nodo_linea(-100,0)
+        linea_correc_bloq = self.fondo.crear_nodo_linea(0,1)
+        cuerpo=(
+                    linea_bloque_mas + forma_basica.nodo_hembra +
+                    self.lin1 + forma_basica.nodo_esq_ar_der +
+                    self.lin2 + self.lin3 +
+                    forma_basica.nodo_esq_ab_der +
+                    self.lin4 + linea_bloque_menos +
+                    forma_basica.nodo_macho +
+                    self.lin5 +
+                    forma_basica.nodo_esq_ab_izq+self.lin6 + self.lin8 +
+                    forma_basica.nodo_esq_ar_izq)
+        return cuerpo
+
+    def crear_comp_bloque_1(self):
+        self.linea_corr_texto_mas = self.fondo.crear_nodo_linea(self.tam_text,0)
+        self.linea_corr_texto_menos = self.fondo.crear_nodo_linea(self.tam_text*-1,0)
+        linea_bloque_mas = self.fondo.crear_nodo_linea(90,0)
+        linea_bloque_menos1 = self.fondo.crear_nodo_linea(-10,0)
+        linea_bloque_menos = self.fondo.crear_nodo_linea(-90,0)
+        linea_correc_bloq = self.fondo.crear_nodo_linea(0,1)
+        cuerpo=(
+                    forma_basica.nodo_hembra + linea_bloque_mas +
+                    self.lin1 + forma_basica.nodo_esq_ar_der +
+                    self.lin2 + forma_basica.nodo_parametros +self.lin3  +
+                    forma_basica.nodo_esq_ab_der +
+                    self.lin4 + linea_bloque_menos1 +
+                    forma_basica.nodo_macho +
+                    self.lin5 + linea_bloque_menos +
+                    forma_basica.nodo_esq_ab_izq+self.lin6 + self.lin7 + self.lin8 +
+                    forma_basica.nodo_esq_ar_izq)
+        return cuerpo
+
+class Formas(FormaSvg):
+    def __init__(self):
+        self.texto=""
+        self.conector_h_dato = [0, 0, 20, 20]  # conector hembra dato
+        self.lista_conector_h_datos = []
+        self.lista_valores = []
+        FormaSvg.__init__(self)
+
+    def crear_poligono(self,arg,tex,comp):
+        self.arg=arg
+        self.texto=tex
+        if comp==1:
+            cuerpo=self.comp_1(arg,tex)
+        if comp==6 or comp==7:
+            cuerpo=self.comp_dat(arg,tex,comp)
+        if comp==5:
+            cuerpo=self.comp_2(arg,tex,comp)
+        if comp==4:
+            print "conector o"
+            cuerpo=self.comp_0(arg,tex,comp)
+        return cuerpo
+
+    def comp_0(self,arg,tex,comp):
+#        cuerpo = [
+                    #(0, -10, 10, 10),
+                    #(10, -7, 4, 4),
+                    #(50, -10, 10, 10),
+                    #(46, -7, 4, 4),
+                    #(0, 0, 60, 40),
+                    #]
+        print "creo el comp cero"
+        cuerpo,cuerpo2=self.crear_comp_0arg()
+        return cuerpo
+
+    def comp_1(self,arg,tex):
+        cuerpo=self.crear_comp_1arg()
+        return cuerpo
+
+    def comp_dat(self,arg,tex,comp):
+        # tomo el valor del texto para agrandar el tamaño del
+        # cuerpo del componente.
+        # si es una imagen le pongo un valor fijo
+        TamaComp = 0
+        if comp == 7:
+            TamaComp = len(tex)
+        else:
+            TamaComp = 1
+        cuerpo=self.crear_comp_dat(TamaComp)
+        return cuerpo
+
+    def comp_2(self,arg,tex,comp):
+        cuerpo=self.crear_comp_bloque_1()
+        return cuerpo
 
 class ComponenteCentral(FormaSvg):
     """ Class doc """
