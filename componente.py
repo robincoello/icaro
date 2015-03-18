@@ -10,9 +10,8 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-import gtk
+from gi.repository import Gtk
 import sys
-#from componente_datos import *
 import forma_basica
 
 
@@ -35,14 +34,13 @@ class ComponenteCentral(FormaSvg):
         botones_mouse = self.ventana.boton_mouse
         self.rectan[0] = self.posicion[0]
         self.rectan[1] = self.posicion[1] - 10
-        if self.vivo == True:
+        if self.vivo is True:
             if (botones_mouse[1] == 1 and
-                self.fondo.collide(self.rectan, posic_mouse[0], posic_mouse[1]) == True and
-                self.pulsado == 0 and
-                self.ventana.seleccionado == 0 and
-                self.ventana.seleccionado_datos == 0 and
-                self.ventana.seleccion_menu == 2
-                    ):
+                    self.fondo.collide(self.rectan, posic_mouse[0], posic_mouse[1]) is True and
+                    self.pulsado == 0 and
+                    self.ventana.seleccionado == 0 and
+                    self.ventana.seleccionado_datos == 0 and
+                    self.ventana.seleccion_menu == 2):
                 posic_mouse = self.ventana.mousexy
                 self.ventana.seleccionado = self.ide
                 self.posic_rel_x = abs(self.posicion[0] - posic_mouse[0])
@@ -50,9 +48,9 @@ class ComponenteCentral(FormaSvg):
                 self.pulsado = 1
             if (self.ventana.seleccionado == self.ide):
                 self.posicion = (
-                                posic_mouse[0] - self.posic_rel_x,
-                                posic_mouse[1] - self.posic_rel_y
-                                )
+                    posic_mouse[0] - self.posic_rel_x,
+                    posic_mouse[1] - self.posic_rel_y
+                )
                 self.pulsado == 1
                 self.pegado = 0
                 self.pegado_a = 0
@@ -60,7 +58,7 @@ class ComponenteCentral(FormaSvg):
                 self.pulsado = 0
                 self.ventana.seleccionado = 0
             if (botones_mouse[1] == 1
-                    and self.fondo.collide(self.rectan, posic_mouse[0], posic_mouse[1]) == True
+                    and self.fondo.collide(self.rectan, posic_mouse[0], posic_mouse[1]) is True
                     and self.ventana.seleccion_menu == 3):
                 for i in range(1, len(self.fondo.objetos_datos)):
                     self.fondo.objetos_datos[i].conectado = 0
@@ -90,13 +88,9 @@ class ComponenteCentral(FormaSvg):
             if self.pegado == 0:
                 self.fondo.lista_ordenada[self.ide] = 0
                 for a in range(len(self.fondo.objetos)):
-                    if (self.fondo.colliderect
-                            (
-                            self.conector_h, self.fondo.objetos[a].conector_m
-                            )
-                        and
-                        self.fondo.objetos[a].vivo) == True:
-
+                    if (self.fondo.colliderect(
+                            self.conector_h, self.fondo.objetos[a].conector_m)
+                            and self.fondo.objetos[a].vivo) is True:
                         self.pegado = 1
                         self.pegado_a = a
                         break
@@ -105,17 +99,19 @@ class ComponenteCentral(FormaSvg):
                         self.pegado_a = 0
             self.dibujar()
 
+
 class componente(ComponenteCentral):
     def __init__(
-                    self,
-                    x, y,
-                    identidad,
-                    argumentos,
-                    color,
-                    texto,
-                    fondo,
-                    ventana
-                ):
+        self,
+        x,
+        y,
+        identidad,
+        argumentos,
+        color,
+        texto,
+        fondo,
+        ventana
+    ):
         self.imagenintermedia = texto.strip(" ")
         self.imagen = (sys.path[0] + "/imagenes/componentes/" + texto.strip(" ") + ".png")
         self.arg = argumentos
@@ -133,36 +129,37 @@ class componente(ComponenteCentral):
         self.rectan = [self.posicion[0], self.posicion[1], 0, 0]
         self.conector_m = [0, 0, 40, 10]  # conector macho
         self.conector_h = [0, 0, 40, 10]  # conector hembra
-        #self.fondo.lista_ordenada.append(0)
+        # self.fondo.lista_ordenada.append(0)
         self.lista_conector_h_datos = []
         self.lista_valores = []
         self.pegado = 0
         self.pegado_a = 0
         self.vivo = True
-        self.cuerpo=self.crear_comp_1arg()
+        self.cuerpo = self.crear_comp_1arg()
         self.dibujar()
 
     def dibujar(self):
         self.conector_h[0] = self.rectan[0] + 45
         self.conector_h[1] = self.rectan[1]+10
-        self.fondo.render_svg(self.ventana.cr,self.cuerpo,self.color,self.posicion[0]+40,self.posicion[1])
+        self.fondo.render_svg(self.ventana.cr,
+                              self.cuerpo, self.color, self.posicion[0] + 40, self.posicion[1])
         factor = 0
-        factor_rectan=40
+        factor_rectan = 40
         if self.arg == 0:
             factor += 10
-            factor_rectan+=40
+            factor_rectan += 40
         factory = (len(self.texto) * 6)
         for a in range(self.arg):
             self.conector_h_dato[0] = self.rectan[0] + 90 + factory
             self.conector_h_dato[1] = self.rectan[1] + 29 + factor
             self.lista_conector_h_datos[a] = (
-                                            self.conector_h_dato[0],
-                                            self.conector_h_dato[1],
-                                            self.conector_h_dato[2],
-                                            self.conector_h_dato[3]
-                                            )
+                self.conector_h_dato[0],
+                self.conector_h_dato[1],
+                self.conector_h_dato[2],
+                self.conector_h_dato[3]
+            )
             factor += 37
-            factor_rectan+=37
+            factor_rectan += 37
         self.rectan[3] = factor_rectan
         self.conector_m[0] = self.rectan[0] + 45
         self.conector_m[1] = self.rectan[1] + self.rectan[3]-12
@@ -178,7 +175,7 @@ class componente(ComponenteCentral):
 class componente_bloque_dos(ComponenteCentral):
 
     def __init__(self, x, y, identidad, color, texto, fondo, ventana):
-         # esto es para poder mandar los datos a guardar
+        # esto es para poder mandar los datos a guardar
         self.imagenintermedia = texto.strip(" ")
         self.arg = 0
         self.ide = identidad
@@ -204,7 +201,7 @@ class componente_bloque_dos(ComponenteCentral):
         self.valx = 145
         self.valy = 0
         super(ComponenteCentral, self).__init__()
-        self.cuerpo=self.crear_comp_bloque_2()
+        self.cuerpo =self.crear_comp_bloque_2()
         self.dibujar()
 
     def dibujar(self):
@@ -233,7 +230,7 @@ class componente_bloque_uno(ComponenteCentral):
     texto = ""
 
     def __init__(self, x, y, identidad, color, texto, fondo, ventana):
-        #esto es para poder mandar los datos a guardar
+        # esto es para poder mandar los datos a guardar
         self.imagenintermedia = texto.strip(" ")
         self.arg = 1
         self.ide = identidad
@@ -243,7 +240,7 @@ class componente_bloque_uno(ComponenteCentral):
         self.ventana = ventana
         self.texto = texto
         self.color_texto = self.fondo.color_texto
-        #rectangulo que representa toda el area del componente
+        # rectangulo que representa toda el area del componente
         self.rectan = [self.posicion[0], self.posicion[1], 210, 90]
         self.conector_m = [0, 0, 40, 10]  # conector macho
         self.conector_h = [0, 0, 40, 10]  # conector hembra
@@ -260,15 +257,14 @@ class componente_bloque_uno(ComponenteCentral):
 
         super(ComponenteCentral, self).__init__()
 
-        self.cuerpo=self.crear_comp_bloque_1()
+        self.cuerpo = self.crear_comp_bloque_1()
         self.dibujar()
 
     def dibujar(self):
 
-        self.fondo.render_svg(self.ventana.cr,self.cuerpo,self.color,self.posicion[0]+40,self.posicion[1])
+        self.fondo.render_svg(self.ventana.cr, self.cuerpo, self.color, self.posicion[0] + 40,self.posicion[1])
         self.conector_h[0] = self.rectan[0] + 45
         self.conector_h[1] = self.rectan[1] + 10
-
 
         self.conector_h_dato[0] = self.rectan[0] + 180
         self.conector_h_dato[1] = self.rectan[1] + 29
@@ -284,6 +280,7 @@ class componente_bloque_uno(ComponenteCentral):
         #self.fondo.draw(self.conector_h[0],self.conector_h[1],self.conector_h[2],self.conector_h[3],(0,255,0),self.ventana.cr)
 
         #self.fondo.draw(self.conector_h_dato[0],self.conector_h_dato[1],self.conector_h_dato[2],self.conector_h_dato[3],(0,255,0),self.ventana.cr)
+
 
 class componente_cero_arg(FormaSvg):
     # el componente cuadrado es el bloque minimo que puede tener un
@@ -628,22 +625,22 @@ class comp_dat_arg(FormaSvg):
         self.cadena_intermedia = ""
 
     def cuadro_texto(self, x, y):
-        window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+        window = Gtk.Window(Gtk.WINDOW_TOPLEVEL)
         window.set_resizable(False)
         window.set_modal(True)
         window.set_border_width(0)
         window.move(x, y)
         window.set_title('ingrese un valor')
         window.set_default_size(100, 200)
-        entry = gtk.Entry()
-        label = gtk.Label("valor")
-        BotonAceptar = gtk.Button("aceptar")
+        entry = Gtk.Entry()
+        label = Gtk.Label("valor")
+        BotonAceptar = Gtk.Button("aceptar")
         BotonAceptar.connect("clicked", self.boton, window, entry)
-        window.add_events(gtk.gdk.KEY_PRESS_MASK)
+        window.add_events(Gtk.gdk.KEY_PRESS_MASK)
         window.connect("key_press_event", self.keypress_cb, window, entry)
-        boxv = gtk.VBox(False, 2)
-        boxh = gtk.HBox(False, 2)
-        boxh2 = gtk.HBox(False, 2)
+        boxv = Gtk.VBox(False, 2)
+        boxh = Gtk.HBox(False, 2)
+        boxh2 = Gtk.HBox(False, 2)
         boxh.pack_start(label, True, True, 1)
         boxh.pack_start(entry, True, True, 1)
         boxh2.pack_start(BotonAceptar, True, True, 1)

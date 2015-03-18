@@ -513,9 +513,9 @@ class Ventana:
              "", self.menuitem_response, "zoomas"],
             [1, toolbar, Gtk.STOCK_ZOOM_OUT, "Achicar",
              "", self.menuitem_response, "zoomenos"],
-            [1, toolbar,Gtk.STOCK_ZOOM_100, "Zoom 1:1",
+            [1, toolbar, Gtk.STOCK_ZOOM_100, "Zoom 1:1",
              "", self.menuitem_response, "zoomcero"],
-             ]
+            ]
 
         # creo los botones de la toolbar en funcion de la tupla botonas_toolbar
         for dat in botones_toolbar:
@@ -674,21 +674,24 @@ class Ventana:
     def mensajes(self, num, mensa):
 
         tipo = (
-                Gtk.MessageType.WARNING,
-                Gtk.MessageType.QUESTION,
-                Gtk.MessageType.ERROR,
-                Gtk.MessageType.INFO
-                )
+            Gtk.MessageType.WARNING,
+            Gtk.MessageType.QUESTION,
+            Gtk.MessageType.ERROR,
+            Gtk.MessageType.INFO
+            )
         botones = (
-                Gtk.ButtonsType.OK,
-                Gtk.ButtonsType.OK_CANCEL,
-                Gtk.ButtonsType.OK,
-                Gtk.ButtonsType.CANCEL
-                )
-        md = Gtk.MessageDialog(None,
+            Gtk.ButtonsType.OK,
+            Gtk.ButtonsType.OK_CANCEL,
+            Gtk.ButtonsType.OK,
+            Gtk.ButtonsType.CANCEL
+            )
+        md = Gtk.MessageDialog(
+            None,
             Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
             tipo[num],
-            botones[num], mensa)
+            botones[num],
+            mensa
+            )
         resp = md.run()
         md.destroy()
         if resp == Gtk.ResponseType.OK:
@@ -729,9 +732,9 @@ class Ventana:
             i = carga.compilar_pic("main", self.cfg)
             if i == 1:
                 self.mensajes(0, ("no se encuentra el compilador sdcc en" +
-                                    " la ruta " + self.config[0] +
-                                    " . Pruebe configurar el archivo" +
-                                    " config.dat y corregirlo"))
+                                  " la ruta " + self.config[0] +
+                                  " . Pruebe configurar el archivo" +
+                                  " config.dat y corregirlo"))
             if i == 0:
                 self.mensajes(3, "la compilacion fue exitosa")
             else:
@@ -740,7 +743,6 @@ class Ventana:
             self.ver.compilar(0)
 
     def upload(self, b):
-        resultado = 1
         i = carga.upload_pic("main", self.cfg)
         if i == 0:
             cargador = carga.Cargador("main")
@@ -759,8 +761,7 @@ class Ventana:
         # if i==2:
             #self.mensajes(0,"error al compilar y generar el archivo .hex")
             # return 4
-    def comp_esp(self, b,datos):
-        resultado = 1
+    def comp_esp(self, b, datos):
         comp = 1
         i = carga.compilar_pic(datos, self.cfg)
         if i == 0:
@@ -783,16 +784,15 @@ class Ventana:
 
         if self.diccionario[b][1] == 1:
             c1 = componente(
-                            x - ax,
-                            y - ay,
-                            self.fondo.identificador + 1,
-                            self.diccionario[b][2],
-                            self.diccionario[b][3],
-                            self.diccionario[b][0],
-                            self.fondo,
-                            self
-
-                            )
+                x - ax,
+                y - ay,
+                self.fondo.identificador + 1,
+                self.diccionario[b][2],
+                self.diccionario[b][3],
+                self.diccionario[b][0],
+                self.fondo,
+                self
+            )
             self.fondo.identificador += 1
             self.fondo.objetos.append(c1)
             self.fondo.tipo_obj.append(self.diccionario[b][1])
@@ -801,14 +801,14 @@ class Ventana:
 
             self.fondo.identificador += 1
             c1 = componente_cero_arg(
-                                    x - ax,
-                                    y - ay,
-                                    self.fondo.identificador,
-                                    self.diccionario[b][3],
-                                    self.diccionario[b][0],
-                                    self.fondo,
-                                    self
-                                    )
+                x - ax,
+                y - ay,
+                self.fondo.identificador,
+                self.diccionario[b][3],
+                self.diccionario[b][0],
+                self.fondo,
+                self
+            )
 
             self.fondo.objetos.append(c1)
             self.fondo.tipo_obj.append(self.diccionario[b][1])
@@ -985,9 +985,9 @@ class Ventana:
         self.archivo = ""
         nuevo.nuevo(self.fondo)
         self.fondo.band = 0
-        R=self.cfg.get("icaro_config","colorR")
-        G=self.cfg.get("icaro_config","colorG")
-        B=self.cfg.get("icaro_config","colorB")
+        R = self.cfg.get("icaro_config", "colorR")
+        G = self.cfg.get("icaro_config", "colorG")
+        B = self.cfg.get("icaro_config", "colorB")
         self.fondo.FONDO = (int(R), int(G), int(B))
         self.fondo.ultimo = 1
         inicial = componente_inicial(
@@ -1085,7 +1085,6 @@ class Ventana:
             self.AccesosDirectos(self.dicc_accesos_directos[event.keyval])
 
     def AccesosDirectos(self, evento):
-        identificador = 0
         if evento == "f1":
             self.MenuRespuesta(1)
         if evento == "f2":
@@ -1096,19 +1095,6 @@ class Ventana:
             self.MenuRespuesta(4)
         if evento == "f5":
             print "creo archivo"
-            # print self.fondo.ultimo
-            # for a in range(len(fondo.lista_ordenada)):
-            #    for a in range(len(fondo.lista_ordenada)):
-            #        if fondo.lista_ordenada[a]==self.fondo.ultimo:
-            #            self.fondo.ultimo=a
-        #        for a in range(1,len(self.fondo.objetos)):
-        #            if self.fondo.objetos[a].ide==self.fondo.ultimo_conectado:
-        #                identificador=a
-        #                break
-            # x=self.fondo.objetos[self.fondo.ultimo].conector_m[0]-10
-            # y=self.fondo.objetos[self.fondo.ultimo].conector_m[1]+40
-            # self.update()
-            # self.crear_componente(self.tipo_componente,x,y)
 
     def keyrelease_cb(self, win, event):
         self.tecla = 0
@@ -1233,26 +1219,26 @@ class Ventana:
         if string == "firmware":
             self.recarga_conf(True)
 
-    def recarga_conf(self,visual):
+    def recarga_conf(self, visual):
         dir_firm = os.path.expanduser('~') + "/.icaro/firmware/"
         dir_conf = os.path.expanduser('~') + "/.icaro/conf/"
         np05 = "/usr/share/icaro/pic16/np05"
         conf = "/usr/share/icaro/pic16/conf"
-        if visual==True:
-            resp=self.mensajes(1, "se volvera a la versión por defecto del firmware y la configuracion general, desea continuar")
+        if visual is True:
+            resp = self.mensajes(1, "se volvera a la versión por defecto del firmware y la configuracion general, desea continuar")
         else:
-            resp=True
-        if resp==True:
+            resp = True
+        if resp is True:
             try:
                 os.system("rm -rf " + dir_conf)
                 os.system("cp -R " + np05 + " " + dir_firm)
                 os.system("cp -R " + conf + " " + dir_conf)
-                if visual==True:
+                if visual is True:
                     self.mensajes(3, "se actualizo el firmware y la conf general")
                 else:
                     print "se actualizo el firmware y la configuración general"
             except:
-                if visual==True:
+                if visual is True:
                     self.mensajes(0, "no se pudo actualizar el firmware")
                 else:
                     print "hubo un error copiando el firmware y la configuración general"
