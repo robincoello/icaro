@@ -10,36 +10,32 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
+import gtk
 import sys
-#from os import system
-from componente_datos import *
+#from componente_datos import *
+import forma_basica
 
 
-class ComponenteCentral():
-
+class ComponenteCentral(FormaSvg):
     """ Class doc """
     pulsado = 0
-    conector_h_dato = [0, 0, 40, 20]  # conector hembra dato
-
+    conector_h_dato = [0, 0, 20, 20]  # conector hembra dato
     ide = 0
     color = (110, 20, 90)
     texto = ""
-    valx = 10
-    valy = 10
-#    linexy=[0,0,0,0]
+    valx = 45
+    valy = 0
 
     def __init__(self):
         """ Class initialiser """
-        pass
+        super(FormaSvg, self).__init__()
 
     def update(self):
-        # ban_a=0
         posic_mouse = self.ventana.mousexy
         botones_mouse = self.ventana.boton_mouse
         self.rectan[0] = self.posicion[0]
         self.rectan[1] = self.posicion[1] - 10
         if self.vivo == True:
-
             if (botones_mouse[1] == 1 and
                 self.fondo.collide(self.rectan, posic_mouse[0], posic_mouse[1]) == True and
                 self.pulsado == 0 and
@@ -63,7 +59,6 @@ class ComponenteCentral():
             if botones_mouse[1] == 0:
                 self.pulsado = 0
                 self.ventana.seleccionado = 0
-
             if (botones_mouse[1] == 1
                     and self.fondo.collide(self.rectan, posic_mouse[0], posic_mouse[1]) == True
                     and self.ventana.seleccion_menu == 3):
@@ -80,31 +75,21 @@ class ComponenteCentral():
                     self.fondo.objetos[i].pegado_a = 0
                     self.fondo.objetos[i].pegado = 0
                 self.fondo.objetos[a].vivo = False
-                # print a
-
                 del self.fondo.tipo_obj[a]
-                # self.fondo.objetos[a].borrar()
                 self.fondo.objetos.remove(self)
                 self.fondo.lista_ordenada[self.ide] = 0
-
             if self.pegado == 1:
                 x, y, aa, bb = self.fondo.objetos[self.pegado_a].conector_m
                 xx = x - self.valx
-                yy = y + self.valy
+                yy = y - self.valy
                 self.posicion = (xx, yy)
                 iden = self.fondo.objetos[self.pegado_a].ide
                 self.fondo.lista_ordenada[self.ide] = iden
-                # self.color=(0,0,0)
                 self.dibujar()
-
                 return 0
             if self.pegado == 0:
                 self.fondo.lista_ordenada[self.ide] = 0
                 for a in range(len(self.fondo.objetos)):
-#                    if a>0:
-                        # print "obj= ",a , "----",self.fondo.objetos[a].pegado
-#                        if self.fondo.objetos[a].pegado==0:
-# self.linexy=[self.conector_h[0],self.conector_h[1],self.fondo.objetos[a].conector_m[0],self.fondo.objetos[a].conector_m[1]]
                     if (self.fondo.colliderect
                             (
                             self.conector_h, self.fondo.objetos[a].conector_m
@@ -114,16 +99,13 @@ class ComponenteCentral():
 
                         self.pegado = 1
                         self.pegado_a = a
-
                         break
                     else:
                         self.pegado = 0
                         self.pegado_a = 0
             self.dibujar()
 
-
 class componente(ComponenteCentral):
-
     def __init__(
                     self,
                     x, y,
@@ -135,8 +117,7 @@ class componente(ComponenteCentral):
                     ventana
                 ):
         self.imagenintermedia = texto.strip(" ")
-        self.imagen = (
-            sys.path[0] + "/imagenes/componentes/" + texto.strip(" ") + ".png")
+        self.imagen = (sys.path[0] + "/imagenes/componentes/" + texto.strip(" ") + ".png")
         self.arg = argumentos
         self.ide = identidad
         self.posicion = (x, y)
@@ -145,79 +126,53 @@ class componente(ComponenteCentral):
         self.ventana = ventana
         self.texto = texto
         self.color_texto = self.fondo.color_texto
+        super(ComponenteCentral, self).__init__()
         # rectangulo que representa toda el area del componente
-        self.rectan = [self.posicion[0], self.posicion[1], 60, 60]
+        # el valor de rectan[3] se define en funcion del tamaño del
+        # componente (usando la variable "factor")
+        self.rectan = [self.posicion[0], self.posicion[1], 0, 0]
         self.conector_m = [0, 0, 40, 10]  # conector macho
         self.conector_h = [0, 0, 40, 10]  # conector hembra
-#        self.fondo.lista_ordenada.append(0)
+        #self.fondo.lista_ordenada.append(0)
         self.lista_conector_h_datos = []
         self.lista_valores = []
         self.pegado = 0
         self.pegado_a = 0
         self.vivo = True
-        for a in range(self.arg):
-            # creo dos lista con los valores del rect
-            # de cada conector que creo
-            # y sus valores.
-            # estas listas son las que parsean los componentes_datos
-            self.lista_conector_h_datos.append((0, 0, 0, 0))
-            self.lista_valores.append("")
+        self.cuerpo=self.crear_comp_1arg()
         self.dibujar()
 
-#    def borrar(self):
-#        self.kill()
     def dibujar(self):
-        # print self.fondo.lista_ordenada
-        self.conector_h[0] = self.rectan[0] + 10
-        self.conector_h[1] = self.rectan[1]
-        cuerpo = [
-                (0, -10, 10, 10),
-                (10, -7, 4, 4),
-                (50, -10, 10, 10),
-                (46, -7, 4, 4),
-                ]
-
+        self.conector_h[0] = self.rectan[0] + 45
+        self.conector_h[1] = self.rectan[1]+10
+        self.fondo.render_svg(self.ventana.cr,self.cuerpo,self.color,self.posicion[0]+40,self.posicion[1])
         factor = 0
+        factor_rectan=40
         if self.arg == 0:
-            cuerpo.append((0, factor, 60, 40))
-            factor += 40
-        factory = (len(self.texto) * 7)
+            factor += 10
+            factor_rectan+=40
+        factory = (len(self.texto) * 6)
         for a in range(self.arg):
-            cuerpo.append((0, factor, 25 + factory, 40))
-            cuerpo.append((25 + factory, factor, 10, 10))
-            cuerpo.append((25 + factory + 3, factor + 10, 4, 4))
-            cuerpo.append((25 + factory, 30 + factor, 10, 10))
-            cuerpo.append((25 + factory + 3, 30 + factor - 4, 4, 4))
-            self.conector_h_dato[0] = self.rectan[0] + 25 + factory
-            self.conector_h_dato[1] = self.rectan[1] + 20 + factor
+            self.conector_h_dato[0] = self.rectan[0] + 90 + factory
+            self.conector_h_dato[1] = self.rectan[1] + 29 + factor
             self.lista_conector_h_datos[a] = (
                                             self.conector_h_dato[0],
                                             self.conector_h_dato[1],
                                             self.conector_h_dato[2],
                                             self.conector_h_dato[3]
                                             )
-            factor += 40
-
-        self.rectan[3] = factor
-        self.conector_m[0] = self.rectan[0] + 10
-        self.conector_m[1] = self.rectan[1] + factor + 10
-        cuerpo.append((14, factor, 32, 10))
-        cuerpo.append((10, factor, 40, 3))
-        cuerpo.append((10, factor + 7, 40, 3))
-        for x, y, w, h in cuerpo:
-            self.fondo.draw(self.posicion[0] + x, self.posicion[
-                            1] + y, w, h, self.color, self.ventana.cr)
-        self.fondo.imagen(self.imagen, self.posicion[0] + (
-            self.rectan[2] / 2) - 15, self.posicion[1] + (self.rectan[3] / 2) - 5, self.ventana.cr)
-        self.fondo.texto(self.texto, self.posicion[0] + 13, self.posicion[
-                         1] + (self.rectan[3] / 2) - 7, self.color_texto, self.ventana.cr)
-#        if self.pulsado==1:
-#            print "--",self.fondo.ultimo
-#            self.ventana.cr.move_to(self.posicion[0]+30,self.posicion[1]-5)
-#            self.fondo.line(
-#                            self.fondo.objetos[self.fondo.ultimo-1].conector_m[0]+20,
-#                            self.fondo.objetos[self.fondo.ultimo-1].conector_m[1]+10,
-#                            self.ventana.cr)
+            factor += 37
+            factor_rectan+=37
+        self.rectan[3] = factor_rectan
+        self.conector_m[0] = self.rectan[0] + 45
+        self.conector_m[1] = self.rectan[1] + self.rectan[3]-12
+        self.fondo.imagen(self.imagen, self.posicion[0] + 30,( self.posicion[1] + (self.rectan[3]/4)), self.ventana.cr)
+        self.fondo.texto(self.texto, self.posicion[0] + 70, self.posicion[1] +(self.rectan[3]/4)+15, self.color_texto, self.ventana.cr)
+        #self.fondo.draw(self.rectan[0],self.rectan[1],self.rectan[2],self.rectan[3],(0,0,255),self.ventana.cr)
+        #self.fondo.draw(self.conector_m[0],self.conector_m[1],self.conector_m[2],self.conector_m[3],(255,0,0),self.ventana.cr)
+        #self.fondo.draw(self.conector_h[0],self.conector_h[1],self.conector_h[2],self.conector_h[3],(0,255,0),self.ventana.cr)
+        #for con in self.lista_conector_h_datos:
+        #    self.fondo.draw(con[0],con[1],con[2],con[3],(0,0,0),self.ventana.cr)
 
 
 class componente_bloque_dos(ComponenteCentral):
@@ -231,16 +186,14 @@ class componente_bloque_dos(ComponenteCentral):
         self.color = color
         self.fondo = fondo
         self.ventana = ventana
-        #~ self.textorender=textorender
         self.texto = texto
         self.color_texto = self.fondo.color_texto
         # rectangulo que representa toda el area del componente
-        self.rectan = [self.posicion[0], self.posicion[1], 60, 60]
+        self.rectan = [self.posicion[0], self.posicion[1], 210, 90]
         # conector macho
         self.conector_m = [0, 0, 40, 10]
         # conector hembraS
         self.conector_h = [0, 0, 40, 10]
-#        self.fondo.lista_ordenada.append(0)
         self.lista_conector_h_datos = []
         self.lista_valores = []
         self.pegado = 0
@@ -248,38 +201,33 @@ class componente_bloque_dos(ComponenteCentral):
         self.lista_conector_h_datos.append((0, 0, 0, 0))
         self.lista_valores.append("")
         self.vivo = True
-        self.valx = 70
-        self.valy = 10
+        self.valx = 145
+        self.valy = 0
+        super(ComponenteCentral, self).__init__()
+        self.cuerpo=self.crear_comp_bloque_2()
         self.dibujar()
 
     def dibujar(self):
-        cuerpo = [
-                (60, -10, 10, 10),
-                (70, -7, 4, 4),
-                (110, -10, 10, 10),
-                (106, -7, 4, 4),
-                (0, 0, 120, 40),
-                (14, 40, 32, 10),
-                (14, 40, 32, 10),
-                (10, 40, 40, 3),
-                (10, 47, 40, 3)
-                ]
-        for x, y, w, h in cuerpo:
-            self.fondo.draw(self.posicion[0] + x, self.posicion[
-                            1] + y, w, h, self.color, self.ventana.cr)
-        self.fondo.texto(self.texto, self.posicion[0] + 13, self.posicion[
-                         1] + (self.rectan[3] / 2) - 7, self.color_texto, self.ventana.cr)
-        self.conector_m[0] = self.rectan[0] + 10
-        self.conector_m[1] = self.rectan[1] + 50
-        self.conector_h[0] = self.rectan[0] + 70
-        self.conector_h[1] = self.rectan[1]
+        self.fondo.render_svg(self.ventana.cr,self.cuerpo,self.color,self.posicion[0]+40,self.posicion[1])
+        self.fondo.texto(self.texto, self.posicion[0] + 60, self.posicion[
+                         1] + 40, self.color_texto, self.ventana.cr)
+        self.conector_m[0] = self.rectan[0] + 55
+        self.conector_m[1] = self.rectan[1] + 65
+        self.conector_h[0] = self.rectan[0] + 150
+        self.conector_h[1] = self.rectan[1] + 10
+        #self.fondo.draw(self.rectan[0],self.rectan[1],self.rectan[2],self.rectan[3],(0,0,255),self.ventana.cr)
+        #self.fondo.draw(self.conector_m[0],self.conector_m[1],self.conector_m[2],self.conector_m[3],(255,0,0),self.ventana.cr)
+        #self.fondo.draw(self.conector_h[0],self.conector_h[1],self.conector_h[2],self.conector_h[3],(0,255,0),self.ventana.cr)
+
+
+
 
 
 class componente_bloque_uno(ComponenteCentral):
     pulsado = 0
     #rectangulo que representa toda el area del componente
     rectan = [0, 0, 60, 60]
-    conector_h_dato = [0, 0, 30, 20]  # conector hembra dato
+    conector_h_dato = [0, 0, 20, 20]  # conector hembra dato
     ide = 0
     color = (110, 20, 90)
     texto = ""
@@ -287,12 +235,6 @@ class componente_bloque_uno(ComponenteCentral):
     def __init__(self, x, y, identidad, color, texto, fondo, ventana):
         #esto es para poder mandar los datos a guardar
         self.imagenintermedia = texto.strip(" ")
-        #~ self.imagen=pygame.image.load(
-                                        #~ sys.path[0] +
-                                        #~ "/imagenes/componentes/"+
-                                        #~ texto.strip(" ")+
-                                        #~ ".png"
-                                    #~ )
         self.arg = 1
         self.ide = identidad
         self.posicion = (x, y)
@@ -302,7 +244,7 @@ class componente_bloque_uno(ComponenteCentral):
         self.texto = texto
         self.color_texto = self.fondo.color_texto
         #rectangulo que representa toda el area del componente
-        self.rectan = [self.posicion[0], self.posicion[1], 60, 60]
+        self.rectan = [self.posicion[0], self.posicion[1], 210, 90]
         self.conector_m = [0, 0, 40, 10]  # conector macho
         self.conector_h = [0, 0, 40, 10]  # conector hembra
 #        self.fondo.lista_ordenada.append(0)
@@ -313,64 +255,55 @@ class componente_bloque_uno(ComponenteCentral):
         self.lista_conector_h_datos.append((0, 0, 0, 0))
         self.lista_valores.append("")
         self.vivo = True
-        self.valx = 10
-        self.valy = 10
+        self.valx = 45
+        self.valy = 0
 
+        super(ComponenteCentral, self).__init__()
+
+        self.cuerpo=self.crear_comp_bloque_1()
         self.dibujar()
 
     def dibujar(self):
-        self.conector_h[0] = self.rectan[0] + 10
-        self.conector_h[1] = self.rectan[1]
-        #~ pygame.draw.line(self.fondo.screen,(0,0,0),(self.posicion[0]-3,self.posicion[1]-10),(self.posicion[0]-3,self.posicion[1]+40),5)
-        cuerpo = [
-                    (0, -10, 10, 10),
-                    (10, -7, 4, 4),
-                    (50, -10, 10, 10),
-                    (46, -7, 4, 4),
-                    (0, 0, 120, 40),
-                    (74, 40, 32, 10),
-                    (70, 40, 40, 3),
-                    (70, 47, 40, 3),
-                    (120, 0, 10, 10),
-                    (123, 10, 4, 4),
-                    (120, 30, 10, 10),
-                    (123, 26, 4, 4)
-                ]
-        for x, y, w, h in cuerpo:
-            self.fondo.draw(self.posicion[0] + x, self.posicion[
-                            1] + y, w, h, self.color, self.ventana.cr)
 
-        self.conector_h_dato[0] = self.rectan[0] + 120
-        self.conector_h_dato[1] = self.rectan[1] + 20
+        self.fondo.render_svg(self.ventana.cr,self.cuerpo,self.color,self.posicion[0]+40,self.posicion[1])
+        self.conector_h[0] = self.rectan[0] + 45
+        self.conector_h[1] = self.rectan[1] + 10
+
+
+        self.conector_h_dato[0] = self.rectan[0] + 180
+        self.conector_h_dato[1] = self.rectan[1] + 29
         self.lista_conector_h_datos[0] = (self.conector_h_dato[
                                           0], self.conector_h_dato[1], self.conector_h_dato[2], self.conector_h_dato[3])
-        self.fondo.texto(self.texto, (self.posicion[0] + 10), (
-            self.posicion[1] + 20), self.color_texto, self.ventana.cr)
+        self.fondo.texto(self.texto, (self.posicion[0] + 60), (
+            self.posicion[1] + 40), self.color_texto, self.ventana.cr)
 
-# self.textorender.render(self.texto,self.color_texto,((self.posicion[0]+10),(self.posicion[1]+10)))
-        self.conector_m[0] = self.rectan[0] + 70
-        self.conector_m[1] = self.rectan[1] + 50
+        self.conector_m[0] = self.rectan[0] + 135
+        self.conector_m[1] = self.rectan[1] + 80
+        #self.fondo.draw(self.rectan[0],self.rectan[1],self.rectan[2],self.rectan[3],(0,0,255),self.ventana.cr)
+        #self.fondo.draw(self.conector_m[0],self.conector_m[1],self.conector_m[2],self.conector_m[3],(255,0,0),self.ventana.cr)
+        #self.fondo.draw(self.conector_h[0],self.conector_h[1],self.conector_h[2],self.conector_h[3],(0,255,0),self.ventana.cr)
 
+        #self.fondo.draw(self.conector_h_dato[0],self.conector_h_dato[1],self.conector_h_dato[2],self.conector_h_dato[3],(0,255,0),self.ventana.cr)
 
-class componente_cero_arg():
+class componente_cero_arg(FormaSvg):
     # el componente cuadrado es el bloque minimo que puede tener un
     # icaro-block
     pulsado = 0
-
-    # conector_h_dato=pygame.Rect(0,0,10,20)#conector hembra dato
     ide = 0
     color = (110, 20, 90)
     texto = ""
 
     def __init__(self, x, y, identidad, color, texto, fondo, ventana):
+
+        # super(FormaSvg, self).__init__()
         self.ide = identidad
         self.posicion = (x, y)
         self.posicion2 = (x, y + 60)
         self.arg = 0
         self.fondo = fondo
         # rectangulo que representa toda el area del componente
-        self.rectan = [self.posicion[0], self.posicion[1], 60, 60]
-        self.rectan2 = [self.posicion2[0], self.posicion2[1], 60, 60]
+        self.rectan = [self.posicion[0], self.posicion[1], 90, 70]
+        self.rectan2 = [self.posicion2[0], self.posicion2[1],90, 70]
         self.conector_h = [0, 0, 40, 10]  # conector hembra
         self.conector_m = [0, 0, 40, 10]  # conector macho
         self.vivo = True
@@ -384,30 +317,19 @@ class componente_cero_arg():
         self.fondo = fondo
         self.ventana = ventana
         self.color_texto = self.fondo.color_texto
+
+        FormaSvg.__init__(self)
+        self.cuerpo1 , self.cuerpo2 = self.crear_comp_0arg()
         self.dibujar()
 
     def dibujar(self):
         # conector hembra
-        cuerpo1 = [
-                    (0, -10, 10, 10),
-                    (10, -7, 4, 4),
-                    (50, -10, 10, 10),
-                    (46, -7, 4, 4),
-                    (0, 0, 60, 40),
-                    ]
-        for x, y, w, h in cuerpo1:
-            self.fondo.draw(self.posicion[0] + x, self.posicion[
-                            1] + y, w, h, self.color, self.ventana.cr)
-        cuerpo2 = [
-                    (0, 0, 60, 40),
-                    (14, 40, 32, 10),
-                    (10, 40, 40, 3),
-                    (10, 47, 40, 3),
-                    ]
-        for x, y, w, h in cuerpo2:
-            self.fondo.draw(self.posicion2[0] + x, self.posicion2[
-                            1] + y, w, h, self.color, self.ventana.cr)
-
+        self.fondo.render_svg(self.ventana.cr,self.cuerpo1,self.color,self.posicion[0]+30,self.posicion[1])
+        self.fondo.render_svg(self.ventana.cr,self.cuerpo2,self.color,self.posicion2[0]+50,self.posicion2[1])
+        #self.fondo.draw(self.rectan[0],self.rectan[1],self.rectan[2],self.rectan[3],(0,0,255),self.ventana.cr)
+        #self.fondo.draw(self.rectan2[0],self.rectan2[1],self.rectan[2],self.rectan[3],(0,0,255),self.ventana.cr)
+        #self.fondo.draw(self.conector_m[0],self.conector_m[1],self.conector_m[2],self.conector_m[3],(255,0,0),self.ventana.cr)
+        #self.fondo.draw(self.conector_h[0],self.conector_h[1],self.conector_h[2],self.conector_h[3],(0,255,0),self.ventana.cr)
         self.fondo.texto(
                                 str(self.ide),
                                 (self.posicion[0] + 20), (
@@ -415,7 +337,6 @@ class componente_cero_arg():
                                 self.color_texto,
                                 self.ventana.cr
                                 )
-
         self.fondo.texto(
                                 str(self.ide),
                                 (self.posicion2[0] + 20), (
@@ -423,18 +344,11 @@ class componente_cero_arg():
                                 self.color_texto,
                                 self.ventana.cr
                                 )
-
-        #~ self.textorender.render(
-                                #~ str(self.ide),
-                                #~ self.color_texto,
-                                #~ ((self.posicion2[0]+10),(self.posicion2[1]+10))
-                                #~ )
-
         # self.conector_h es la ficha "hembra"
-        self.conector_h[0] = self.rectan[0] + 10
-        self.conector_h[1] = self.rectan[1]
-        self.conector_m[0] = self.rectan2[0] + 10
-        self.conector_m[1] = self.rectan2[1] + 50
+        self.conector_h[0] = self.rectan[0] + 30
+        self.conector_h[1] = self.rectan[1]+10
+        self.conector_m[0] = self.rectan2[0] + 30
+        self.conector_m[1] = self.rectan2[1] + 65
 
     def update(self):
         ban_a = 0
@@ -457,8 +371,8 @@ class componente_cero_arg():
                         self.pegado_a = 0
             if self.pegado == 1:
                 x, y, aa, bb = self.fondo.objetos[self.pegado_a].conector_m
-                xx = x - 10
-                yy = y + 10
+                xx = x-35
+                yy = y
                 self.posicion = (xx, yy)
                 self.fondo.lista_ordenada[
                     self.ide] = self.fondo.objetos[self.pegado_a].ide
@@ -477,7 +391,6 @@ class componente_cero_arg():
                 self.pulsado == 1
                 self.pegado = 0
                 self.pegado_a = 0
-#
             if (botones_mouse[1] == 1 and
                 self.fondo.collide(self.rectan2, posic_mouse[0], posic_mouse[1]) == True and
                 self.pulsado == 0 and
@@ -491,10 +404,6 @@ class componente_cero_arg():
                 self.posicion2 = (
                     posic_mouse[0] - self.posic_rel_x2, posic_mouse[1] - self.posic_rel_y2)
                 self.pulsado == 2
-#                self.pegado=0
-#                self.pegado_a=0
-#
-
             if botones_mouse[1] == 0:
                 self.pulsado = 0
                 self.ventana.seleccionado = 0
@@ -515,7 +424,245 @@ class componente_cero_arg():
                     self.fondo.objetos[i].pegado = 0
                 self.fondo.objetos[a].vivo = False
                 del self.fondo.tipo_obj[a]
-                # self.kill()
                 self.fondo.objetos.remove(self)
                 self.fondo.lista_ordenada[self.ide] = 0
         self.dibujar()
+
+class comp_dat_arg(FormaSvg):
+    posic_rel_x = 0
+    posic_rel_y = 0
+    pulsado = 0
+    posicion = (0, 0)
+    cadena_final = ""
+    cadena_intermedia = ""
+    # rectangulo que representa toda el area del componente
+    ide = 0
+    color = (125, 100, 83)
+    modificable = 0
+    valor_cadena_no_mod = "0"
+
+    def __init__(
+        self,
+        x, y,
+        identidad,
+        mod,
+        texto,
+        color,
+        val_no_mod,
+        img,
+        tipo,
+        fondo,
+        ventana,
+    ):
+        self.rectan = [0, 0, 80, 50]
+        self.ide = identidad
+        self.posicion = (x, y)
+        self.texto = texto
+        self.color = color
+        self.fondo = fondo
+        self.ventana = ventana
+        self.color_texto = self.fondo.color_texto
+        self.conector_m = [0, 0, 20, 20]  # conector macho
+        self.conector_h = [0, 0, 20, 20]  # conector hembra
+        self.pegado2 = 0
+        self.pegado_a2 = 0
+        self.pegado = 0
+        self.pegado_a = 0
+        self.pegado_b = 0
+        self.conectado = 0
+        self.tecla = 0
+        self.tecla_presionada = 0
+        self.modificable = mod
+        self.valor_cadena_no_mod = val_no_mod
+        self.imagen = sys.path[0] + "/imagenes/componentes/" + img
+        self.tipo = tipo
+        if self.tipo == 6:
+            self.imagenintermedia = img
+            self.imagen = sys.path[0] + "/imagenes/componentes/" + img
+        self.tam_text = (len(self.texto) * 6)
+        FormaSvg.__init__(self)
+    def dibujar(self):
+        # tomo el valor del texto para agrandar el tamaño del
+        # cuerpo del componente.
+        # si es una imagen le pongo un valor fijo
+        TamaComp = 0
+        if self.tipo == 7:
+            TamaComp = len(self.texto)*7
+        else:
+            TamaComp = 3
+        self.cuerpo= self.crear_comp_dat(TamaComp)
+        self.fondo.render_svg(self.ventana.cr,self.cuerpo,self.color,self.posicion[0]+40,self.posicion[1])
+        self.conector_h[0] = self.rectan[0] + TamaComp+60
+        self.conector_h[1] = self.rectan[1]+5
+
+        #self.fondo.draw(self.conector_m[0],self.conector_m[1],self.conector_m[2],self.conector_m[3],(0,0,0),self.ventana.cr)
+        #self.fondo.draw(self.conector_h[0],self.conector_h[1],self.conector_h[2],self.conector_h[3],(0,0,0),self.ventana.cr)
+        #self.fondo.draw(self.rectan[0],self.rectan[1],self.rectan[2],self.rectan[3],(0,0,255),self.ventana.cr)
+        if self.tipo == 7:
+            self.fondo.texto(self.texto, self.posicion[
+                             0] + 40, self.posicion[1] + 22, self.color_texto, self.ventana.cr)
+            self.rectan[2]=TamaComp +80
+        if self.tipo == 6:
+            self.modificable = 0
+            self.fondo.imagen(self.imagen, self.posicion[
+                              0] + 30 , self.posicion[1]+4 , self.ventana.cr)
+    def update(self):
+        ban_a = 0
+        cadena_auxiliar = ""
+        posic_mouse = self.ventana.mousexy
+        botones_mouse = self.ventana.boton_mouse
+        # self.rectan es el rect
+        # que representa la totalidad de la figura
+        # self.conector_m es la ficha "macho"
+        self.conector_m[0] = self.rectan[0]
+        self.conector_m[1] = self.rectan[1]+5
+
+        if (
+            botones_mouse[1] and
+            self.ventana.seleccion_menu == 4
+            and self.fondo.collide(self.rectan, posic_mouse[0], posic_mouse[1]) == True and
+            self.modificable == 1 and
+            self.tecla == 0
+        ):
+            self.cuadro_texto(int(posic_mouse[0]), int(posic_mouse[1]))
+            self.tecla = 1
+        if botones_mouse[1] == 0:
+            self.tecla = 0
+            self.pulsado = 0
+            self.ventana.seleccionado_datos = 0
+
+        if self.modificable == 1:
+            self.cadena_final = self.texto + self.cadena_intermedia
+        else:
+            self.cadena_final = (
+                self.valor_cadena_no_mod
+                +
+                self.cadena_intermedia
+            )
+        self.cadena_final = self.cadena_final.replace("\r", '')
+
+        if self.conectado == 0 and self.ventana.seleccionado == 0:
+            if self.pegado == 0:
+                for a in range(1, len(self.fondo.objetos)):
+                    valor1 = self.fondo.objetos[a].lista_conector_h_datos
+                    for b in range(len(valor1)):
+                        valor2 = self.fondo.objetos[a]
+                        valor3 = valor2.lista_conector_h_datos[b]
+                        if (self.fondo.colliderect(self.conector_m, valor3) == True):
+
+                            self.pegado = 1
+                            self.conectado = 1
+                            self.pegado_a = a
+                            self.pegado_b = b
+        try:
+            if self.pegado == 1:
+                valor1 = self.fondo.objetos[self.pegado_a]
+                valor2 = valor1.lista_conector_h_datos[self.pegado_b]
+                x, y, aa, bb = valor2
+                xx = x
+                yy = y
+                self.posicion = (xx-5, yy-8)
+                valor1.lista_valores[self.pegado_b] = self.cadena_final
+        except:
+            self.pegado = 0
+
+        if self.conectado == 0 and self.ventana.seleccionado == 0:
+            if self.pegado2 == 0:
+                for z in range(0, len(self.fondo.objetos_datos)):
+                    val = self.fondo.objetos_datos[z].conector_h
+                    if (self.fondo.colliderect(self.conector_m, val) == True):
+                        self.pegado_a2 = z
+                        self.pegado2 = 1
+                        self.conectado = 1
+        if self.pegado2 == 1:
+            val1 = self.fondo.objetos_datos[self.pegado_a2].conector_h
+            x, y, aa, bb = val1
+            xx = x
+            yy = y
+            self.posicion = (xx-10, yy-4)
+            val2 = self.fondo.objetos_datos[self.pegado_a2]
+            val2.cadena_intermedia = self.cadena_final
+        else:
+            self.cadena_intermedia = ""
+        if (
+            botones_mouse[1] == 1 and
+            self.fondo.collide(self.rectan, posic_mouse[0], posic_mouse[1]) == True and
+            self.ventana.seleccionado == 0 and
+            self.pulsado == 0 and
+            self.ventana.seleccionado_datos == 0 and
+            self.ventana.seleccion_menu == 2
+        ):
+            posic_mouse = self.ventana.mousexy
+            self.ventana.seleccionado_datos = self.ide
+            self.posic_rel_x = abs(self.posicion[0] - posic_mouse[0])
+            self.posic_rel_y = abs(self.posicion[1] - posic_mouse[1])
+            self.pulsado = 1
+        if self.ventana.seleccionado_datos == self.ide:
+            self.posicion = (
+                posic_mouse[0] - self.posic_rel_x,
+                posic_mouse[1] - self.posic_rel_y
+            )
+            self.conectado = 0
+            self.pegado = 0
+            self.pegado_a = 0
+            self.pegado_b = 0
+            self.pegado2 = 0
+            self.pegado_a2 = 0
+
+        if (botones_mouse[1] == 1
+                and self.fondo.collide(self.rectan, posic_mouse[0], posic_mouse[1]) == True
+                and self.ventana.seleccion_menu == 3):
+            for i in range(1, len(self.fondo.objetos_datos)):
+                self.fondo.objetos_datos[i].conectado = 0
+                self.fondo.objetos_datos[i].pegado = 0
+                self.fondo.objetos_datos[i].pegado_a = 0
+                self.fondo.objetos_datos[i].pegado_b = 0
+                self.fondo.objetos_datos[i].pegado2 = 0
+                self.fondo.objetos_datos[i].pegado_a2 = 0
+            a = self.fondo.objetos_datos.index(self)
+            ident = self.fondo.objetos_datos[a].ide
+            self.fondo.objetos_datos.remove(self)
+        self.rectan[0] = self.posicion[0]
+        self.rectan[1] = self.posicion[1]
+        self.dibujar()
+        self.cadena_intermedia = ""
+
+    def cuadro_texto(self, x, y):
+        window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+        window.set_resizable(False)
+        window.set_modal(True)
+        window.set_border_width(0)
+        window.move(x, y)
+        window.set_title('ingrese un valor')
+        window.set_default_size(100, 200)
+        entry = gtk.Entry()
+        label = gtk.Label("valor")
+        BotonAceptar = gtk.Button("aceptar")
+        BotonAceptar.connect("clicked", self.boton, window, entry)
+        window.add_events(gtk.gdk.KEY_PRESS_MASK)
+        window.connect("key_press_event", self.keypress_cb, window, entry)
+        boxv = gtk.VBox(False, 2)
+        boxh = gtk.HBox(False, 2)
+        boxh2 = gtk.HBox(False, 2)
+        boxh.pack_start(label, True, True, 1)
+        boxh.pack_start(entry, True, True, 1)
+        boxh2.pack_start(BotonAceptar, True, True, 1)
+        boxv.pack_start(boxh, True, True, 1)
+        boxv.pack_start(boxh2, True, True, 2)
+        window.add(boxv)
+        window.show_all()
+
+    def keypress_cb(self, a, event, window, entry):
+        if event.keyval == 65293:
+            self.texto = entry.get_text().decode('utf8')
+            self.pulsado = 0
+            print "este es el boton de la ventana", self.texto
+            self.ventana.boton_mouse = [0, 0, 0, 0]
+            window.hide()
+
+    def boton(self, b, window, entry):
+        self.texto = entry.get_text().decode('utf8')
+        self.pulsado = 0
+        print "este es el boton de la ventana", self.texto
+        self.ventana.boton_mouse = [0, 0, 0, 0]
+        window.hide()
