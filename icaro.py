@@ -1139,13 +1139,10 @@ class Ventana:
             dialog = Gtk.FileChooserDialog("save..",
                                            None,
                                            Gtk.FileChooserAction.SAVE,
-                                               (
-                                               Gtk.STOCK_CANCEL,
-                                                Gtk.ResponseType.CANCEL,
-                                                Gtk.STOCK_SAVE,
-                                                Gtk.ResponseType.OK
-                                                )
-                                            )
+                                           (Gtk.STOCK_CANCEL,
+                                            Gtk.ResponseType.CANCEL,
+                                            Gtk.STOCK_SAVE,
+                                            Gtk.ResponseType.OK))
             dialog.set_default_response(Gtk.ResponseType.OK)
             response = dialog.run()
             if response == Gtk.ResponseType.OK:
@@ -1156,17 +1153,13 @@ class Ventana:
         if string == _("Examples"):
             self.abrir(sys.path[0] + "/ejemplos")
         if string == _("Background"):
-            dialog = Gtk.FileChooserDialog(
-                                            "Open..",
-                                            None,
-                                            Gtk.FileChooserAction.OPEN,
-                                                (
-                                                Gtk.STOCK_CANCEL,
-                                                Gtk.ResponseType.CANCEL,
-                                                Gtk.STOCK_OPEN,
-                                                Gtk.ResponseType.OK
-                                                )
-                                            )
+            dialog = Gtk.FileChooserDialog("Open..",
+                                           None,
+                                           Gtk.FileChooserAction.OPEN,
+                                           (Gtk.STOCK_CANCEL,
+                                            Gtk.ResponseType.CANCEL,
+                                            Gtk.STOCK_OPEN,
+                                            Gtk.ResponseType.OK))
             dialog.set_default_response(Gtk.ResponseType.OK)
             response = dialog.run()
             cadena = dialog.get_filename()
@@ -1182,24 +1175,26 @@ class Ventana:
                 dialog.destroy()
         if string == _("Color"):
 
-            colorseldlg = Gtk.ColorSelectionDialog("selección de color")
-            colorsel = colorseldlg.colorsel
-            response = colorseldlg.run()
-            if response - - Gtk.ResponseType.OK:
-                color = colorsel.get_current_color()
-                # color devuelve un Gdk.color
-                # pero el RGB es un integer de 65535 valores
-                # con una regla de tres simple lo adapto a los
-                # 255 valores que soporta pygame
-                self.fondo.FONDO = (
-                            (color.red * 255) / 65535,
-                            (color.green * 255) / 65535,
-                            (color.blue * 255) / 65535
-                            )
-            else:
-                colorseldlg.hide()
+            colorseldlg = Gtk.ColorChooserDialog.new("selección de color", None)
+            colorseldlg.show()
+            # colorsel = colorseldlg.colorsel
+            # response = colorseldlg.run()
+            #if response - - Gtk.ResponseType.OK:
+                ##color = colorsel.get_current_color()
+                #color = colorseldlg.get_color_selection()
+                ## color devuelve un Gdk.color
+                ## pero el RGB es un integer de 65535 valores
+                ## con una regla de tres simple lo adapto a los
+                ## 255 valores que soporta pygame
+                #self.fondo.FONDO = (
+                            #(color.red * 255) / 65535,
+                            #(color.green * 255) / 65535,
+                            #(color.blue * 255) / 65535
+                            #)
+            #else:
+                #colorseldlg.hide()
 
-            colorseldlg.hide()
+            #colorseldlg.hide()
         if string == _("About"):
 
             about = Gtk.AboutDialog()
